@@ -1665,10 +1665,10 @@
       color: var(--accent-light);
       margin-bottom: 4px;
     }
-    /* Grid cells align to the top and keep their natural height, so a checkbox
-       box stays the same size as its neighbours instead of stretching to match
-       a taller field (e.g. a select) in the same row. */
-    .setup-field-grid { align-items: start; }
+    /* Grid cells keep their natural height (no stretch) and bottom-align, so a
+       checkbox box (no label above it) lines up with the input/select box of a
+       labelled field in the same row instead of floating up to the label line. */
+    .setup-field-grid { align-items: end; }
     /* Info-icon tooltip (injected next to labels by applySetupTooltips). */
     .setup-tip {
       display: inline-flex; align-items: center; justify-content: center;

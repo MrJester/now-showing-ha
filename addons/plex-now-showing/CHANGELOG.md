@@ -3,14 +3,22 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.6 - 2026-07-03 (fork)
+
+### Fixed
+
+- Setup-overlay grid rows now bottom-align, so a checkbox box (which has no
+  label above it) lines up with the input/select box of a labelled field in
+  the same row instead of floating up to the label line.
+
 ## 2.3.5-fix.5 - 2026-07-03 (fork)
 
 ### Fixed
 
 - Setup-overlay checkbox boxes are now uniform height. fix.4 stretched a
   checkbox to match a taller field in the same grid row (e.g. Film Grain next
-  to Poster Framing grew tall); grid cells now top-align at their natural
-  height so every checkbox box matches its neighbours.
+  to Poster Framing grew tall); grid cells now keep their natural height so
+  every checkbox box matches its neighbours.
 
 ## 2.3.5-fix.4 - 2026-07-03 (fork)
 
