@@ -1,6 +1,6 @@
 ---
 # Home Assistant add-on repository manifest.
 # Users add this repo's URL in Settings → Add-ons → Add-on store → Repositories.
-name: Now Showing
-url: https://github.com/rusty4444/now-showing-ha
+name: Now Showing (SSE fix fork)
+url: https://github.com/MrJester/now-showing-ha
 maintainer: rusty4444 <samrussellmobile@gmail.com>

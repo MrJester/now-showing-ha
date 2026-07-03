@@ -36,8 +36,8 @@ COPY server/src ./src
 COPY www ./www
 
 # ---- s6 service: run.sh is the long-running process ----
-COPY addons/plex-now-showing/rootfs/etc/services.d/plex-now-showing/run /etc/services.d/plex-now-showing/run
-COPY addons/plex-now-showing/rootfs/etc/services.d/plex-now-showing/finish /etc/services.d/plex-now-showing/finish
+COPY rootfs/etc/services.d/plex-now-showing/run /etc/services.d/plex-now-showing/run
+COPY rootfs/etc/services.d/plex-now-showing/finish /etc/services.d/plex-now-showing/finish
 RUN chmod +x /etc/services.d/plex-now-showing/run \
              /etc/services.d/plex-now-showing/finish
 

@@ -1,0 +1,61 @@
+// Plex Now Showing - runtime config example
+//
+// Copy this file to `now_showing.config.js` (in the same directory) and edit
+// the values below. The real file is git-ignored so your tokens never end up
+// in source control.
+//
+// All keys are optional. Any value can also be supplied via:
+//   - URL hash fragment:   /local/now_showing.html#haToken=abc&backend=jellyfin
+//   - localStorage:        pns.haToken, pns.backend, pns.player, ...
+//   - URL query string:    ?player=media_player.plex_lg_tv  (avoid for tokens)
+//
+// Precedence: hash > localStorage > this file > query string > defaults.
+
+window.NOW_SHOWING_CONFIG = {
+  // Home Assistant
+  // haUrl:   'http://homeassistant.local:8123',   // defaults to the page's origin
+  // haToken: 'PASTE_LONG_LIVED_TOKEN_HERE',        // better: store in localStorage via #setup
+
+  // Backend selection
+  displayMode: 'now_showing', // now_showing | coming_soon
+  backend: 'plex',    // plex | jellyfin | emby | kodi | apple_tv | streaming | kaleidescape
+  player:  '',        // optional: lock to a specific media_player entity id
+
+  // Coming Soon mode (Radarr/Sonarr). Used when displayMode is coming_soon.
+  comingSoonTitle: 'Coming Soon',
+  // radarrUrl: 'http://192.168.1.100:7878',
+  // radarrApiKey: 'RADARR_API_KEY',
+  // sonarrUrl: 'http://192.168.1.100:8989',
+  // sonarrApiKey: 'SONARR_API_KEY',
+  comingSoonMoviesCount: 5,
+  comingSoonShowsCount: 5,
+  comingSoonCycleInterval: 8,
+  comingSoonDaysOffset: 0,
+  comingSoonLookaheadDays: 90, // forward window in days; widen if Coming Soon doesn't fill up
+  comingSoonImageType: 'poster',
+  // TMDB enrichment (#91) is server-side only. Configure tmdb_api_key /
+  // TMDB_API_KEY on the add-on or Docker container so the server can fill in
+  // any digital/physical/theatrical release dates Radarr is missing.
+
+  // Plex filtering
+  plexUsername: '',   // your Plex username - filters to only your playback
+
+  // Optional direct Plex API access (for the info overlay's media-file details)
+  // plexUrl:   'http://192.168.1.10:32400',
+  // plexToken: 'PLEX_TOKEN_HERE',
+
+  // Display
+  landscape: false,   // true = fit entire poster on widescreen displays
+  poll:      5000,    // ms between HA polls
+
+  // Optional visual controls. The #setup Display tab writes these same keys
+  // to localStorage for frontend-only installs.
+  // visualTheme: 'classic-gold',
+  // visualFrameStyle: 'bulbs',
+  // visualMarqueeFont: 'bebas-neue',
+  // visualAccentColor: '',
+  // visualMarqueeBgColor: '',
+  // visualCornerRadiusPx: 0,
+  // visualProgressBar: false,
+  // visualInfoPanelMode: 'on_tap',
+};
