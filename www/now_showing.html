@@ -1665,6 +1665,50 @@
       color: var(--accent-light);
       margin-bottom: 4px;
     }
+    /* Checkbox fields inside a grid stretch to their cell height so a checkbox
+       next to a taller select/field aligns cleanly instead of floating at the
+       top of the row. */
+    .setup-field-grid { align-items: stretch; }
+    .setup-field-grid > .setup-field { margin-bottom: 0; display: flex; flex-direction: column; }
+    .setup-field-grid > .setup-field > .setup-check { flex: 1 1 auto; }
+    /* Info-icon tooltip (injected next to labels by applySetupTooltips). */
+    .setup-tip {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; margin-left: 6px; flex: none;
+      border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--accent-mid) 55%, transparent);
+      color: var(--accent-light);
+      font: 700 10px/1 'Inter', sans-serif; font-style: normal;
+      text-transform: none; letter-spacing: 0;
+      cursor: help; position: relative; vertical-align: middle;
+    }
+    .setup-check .setup-tip { margin-left: auto; }
+    .setup-tip::after {
+      content: attr(data-tip);
+      position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%);
+      width: max-content; max-width: min(260px, 72vw);
+      background: #111; color: var(--text-light);
+      border: 1px solid color-mix(in srgb, var(--accent-mid) 40%, transparent);
+      border-radius: 6px; padding: 8px 10px;
+      font: 400 0.72rem/1.4 'Inter', sans-serif;
+      text-align: left; text-transform: none; letter-spacing: 0; white-space: normal;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      opacity: 0; visibility: hidden; transition: opacity 0.12s ease; pointer-events: none;
+      z-index: 40;
+    }
+    .setup-tip::before {
+      content: ''; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #111;
+      opacity: 0; visibility: hidden; transition: opacity 0.12s ease; z-index: 41;
+    }
+    .setup-tip:hover::after, .setup-tip:focus::after, .setup-tip:focus-visible::after,
+    .setup-tip:hover::before, .setup-tip:focus::before, .setup-tip:focus-visible::before {
+      opacity: 1; visibility: visible;
+    }
+    /* Checkbox tooltips sit at the row's right edge — open the bubble leftward
+       so it can't run off a narrow screen. */
+    .setup-check .setup-tip::after { left: auto; right: 0; transform: none; }
+    .setup-check .setup-tip::before { left: auto; right: 5px; transform: none; }
     .setup-field .hint {
       font-size: 0.7rem;
       color: var(--text-dim);
@@ -2473,7 +2517,6 @@
               <input id="cfgVisualShowPosterTitle" type="checkbox">
               Title on poster
             </label>
-            <div class="hint">Title/subtitle overlaid on the poster's bottom-left. Turn off if the info panel is pinned open and the title reads twice.</div>
           </div>
         </div>
 
@@ -4433,6 +4476,103 @@
       setupStatus('Cleared.', 'ok');
     }
 
+    // Help text shown as a hover/tap tooltip icon next to each setup field.
+    // Keyed by the field's input id; applySetupTooltips() injects an info icon
+    // into the field's label and hides the field's static .hint (dynamic hints
+    // like backend/player status stay visible — see SETUP_TOOLTIP_KEEP_HINTS).
+    const SETUP_TOOLTIPS = {
+      cfgHaUrl: "Base URL of your Home Assistant. Leave blank to use this page's origin.",
+      cfgHaToken: 'HA long-lived access token. Create one under your HA profile → Long-Lived Access Tokens.',
+      cfgDisplayMode: 'Now Showing tracks active media players; Coming Soon shows upcoming Radarr/Sonarr releases.',
+      cfgBackend: 'Which Home Assistant media integration to watch for playback.',
+      cfgPlayer: 'Optional. Pin one media_player entity, or leave blank to auto-detect the active player.',
+      cfgPlexUsername: 'Only show Plex sessions belonging to this username when no player is pinned.',
+      cfgComingSoonTitle: 'Marquee text shown at the top in Coming Soon mode.',
+      cfgComingSoonImageType: 'Use portrait posters or landscape fanart for Coming Soon items.',
+      cfgRadarrUrl: 'Base URL of your Radarr server for upcoming movies.',
+      cfgRadarrApiKey: 'Radarr API key (Settings → General). Stored server-side; leave blank to keep the current key.',
+      cfgSonarrUrl: 'Base URL of your Sonarr server for upcoming episodes.',
+      cfgSonarrApiKey: 'Sonarr API key (Settings → General). Stored server-side; leave blank to keep the current key.',
+      cfgComingSoonMoviesCount: 'How many upcoming Radarr movies to include (0–50).',
+      cfgComingSoonShowsCount: 'How many upcoming Sonarr series to include (0–50).',
+      cfgComingSoonCycleInterval: 'Seconds each Coming Soon item stays on screen (2–300).',
+      cfgComingSoonDaysOffset: 'Also include releases from this many days in the past.',
+      cfgComingSoonLookaheadDays: 'How far ahead to look for upcoming releases. Default 90 days.',
+      cfgComingSoonIncludeCinemaReleases: 'When off, hides movies whose only release date is theatrical. Digital/physical home releases still show.',
+      cfgTmdbApiKey: 'Optional TMDB v3 key or v4 read-token to fill in missing release dates. Leave blank to keep the current key.',
+      cfgTmdbRegion: 'ISO 3166-1 country code (e.g. AU, US, GB) for which regional TMDB release dates to use.',
+      cfgPlexUrl: "Plex server URL. Enables the info panel's media details (resolution, codec, HDR, audio).",
+      cfgPlexToken: 'Plex X-Plex-Token. Required if a Plex URL is set. Never sent to the browser.',
+      cfgLandscape: 'Force the landscape layout that fits the whole poster, regardless of screen orientation.',
+      cfgVisualTheme: 'Overall look-and-feel preset for colors and ornamentation.',
+      cfgVisualFrameStyle: 'Screen-edge frame: animated bulbs, a thin gold line, or none.',
+      cfgVisualBulbSizePx: 'Diameter of each marquee bulb (12–48px). Only applies when Frame Style is Bulbs.',
+      cfgVisualMarqueeFont: 'Font used for the NOW SHOWING marquee banner.',
+      cfgVisualAccentColor: "Optional #RRGGBB override for the theme's accent color. Leave blank for the theme default.",
+      cfgVisualMarqueeBgColor: 'Optional #RRGGBB override for the marquee background. Leave blank for the theme default.',
+      cfgVisualCornerRadiusPx: 'Rounds the marquee, poster, and info panel (0–48px). The outer bulb frame stays square.',
+      cfgVisualPosterFraming: 'How poster art fits the frame: centred, cover (fill), or matted.',
+      cfgVisualFilmGrain: 'Adds a subtle film-grain texture over the poster for a cinematic feel.',
+      cfgVisualKenBurns: 'Slow zoom-and-pan animation across the poster art.',
+      cfgVisualShowPosterTitle: "Title/subtitle overlaid on the poster's bottom-left. Turn off if the info panel is pinned open and the title reads twice.",
+      cfgVisualProgressBar: 'Show a slim playback progress bar along the bottom of the poster.',
+      cfgVisualRatingsBadges: 'Show IMDb / Rotten Tomatoes / audience badges. Requires Plex URL + token.',
+      cfgVisualGenreChips: 'Show genre pills next to the content rating. Requires Plex URL + token.',
+      cfgVisualInfoPanelMode: 'When the info panel appears: on tap, on pause, or always pinned open.',
+      cfgVisualInfoShowTitle: 'Show the title inside the info panel.',
+      cfgVisualInfoShowSubtitle: 'Show the subtitle (season/episode) inside the info panel.',
+      cfgVisualInfoShowMeta: 'Show year / runtime / rating inside the info panel.',
+      cfgVisualInfoShowSummary: 'Show the plot summary inside the info panel.',
+      cfgVisualInfoShowTechbox: 'Show the tech box (resolution, codec, audio) inside the info panel.',
+      cfgVisualInfoShowPlayer: 'Show the player/device name inside the info panel.',
+      cfgVisualUseBackdrops: 'Use movie/show fanart as a backdrop. Requires Plex URL + token.',
+      cfgVisualBackdropStyle: 'Fullscreen fanart on pause, or an ambient blurred backdrop while playing.',
+      cfgVisualBackdropDelayMs: 'How long the player must stay paused before the fullscreen backdrop fades in.',
+      cfgVisualBurnInMitigation: 'OLED protection: drift pixels slightly over time and optionally dim overnight.',
+      cfgVisualNudgeIntervalMs: 'How often the screen shifts by a few pixels for burn-in protection.',
+      cfgVisualNudgeAmplitudePx: 'Maximum pixel shift for burn-in protection (1–16px).',
+      cfgVisualNightModeEntity: "Optional HA entity whose 'on' state dims the screen overnight.",
+      cfgVisualNightModeOpacity: 'How dark the overnight dim overlay is (0–0.95).',
+      cfgBlueprintUrl: "Paste into Home Assistant's blueprint import screen.",
+      cfgSwitcherEnabled: 'Let the add-on drive Fully Kiosk tablets directly. Use this OR the Blueprint, not both.',
+      cfgSwitcherIntervalMs: 'How often the switcher polls HA for play/stop transitions.',
+      cfgFullyKioskHost: 'Fully Kiosk REST URL, e.g. http://tablet.lan:2323.',
+      cfgFullyKioskPassword: 'Fully Kiosk Remote Admin password.',
+      cfgFullyKioskPlayingUrl: 'URL loaded on the tablet when media starts.',
+      cfgFullyKioskStoppedUrl: 'URL loaded on the tablet when media stops.',
+      cfgSwitcherConfigPreview: 'Copy into add-on options or Docker .env, then restart the server/add-on.',
+    };
+    // Dynamic hints that must stay visible (they update at runtime), so
+    // applySetupTooltips() won't hide them when adding an icon.
+    const SETUP_TOOLTIP_KEEP_HINTS = new Set(['cfgBackendHint', 'cfgPlayerHint', 'cfgTmdbStatus']);
+
+    let setupTooltipsApplied = false;
+    function applySetupTooltips() {
+      if (setupTooltipsApplied) return;
+      setupTooltipsApplied = true;
+      for (const [id, text] of Object.entries(SETUP_TOOLTIPS)) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const label = document.querySelector(`label[for="${id}"]`) || el.closest('label.setup-check');
+        if (!label || label.querySelector('.setup-tip')) continue;
+        const tip = document.createElement('span');
+        tip.className = 'setup-tip';
+        tip.dataset.tip = text;
+        tip.tabIndex = 0;
+        tip.setAttribute('role', 'img');
+        tip.setAttribute('aria-label', text);
+        tip.textContent = 'i';
+        label.appendChild(tip);
+        // Hide the now-redundant static hint in this field (keep dynamic ones).
+        const field = el.closest('.setup-field');
+        if (field) {
+          for (const hint of field.querySelectorAll('.hint')) {
+            if (!SETUP_TOOLTIP_KEEP_HINTS.has(hint.id)) hint.style.display = 'none';
+          }
+        }
+      }
+    }
+
     function initSetup() {
       const form  = document.getElementById('setupForm');
       const test  = document.getElementById('setupTestBtn');
@@ -4507,6 +4647,9 @@
         populateSetupForm();
         setupVisible(true);
       });
+
+      // Inject the per-field help tooltips once the static form is in the DOM.
+      applySetupTooltips();
 
       // Show the gear icon on the live display whenever we have any saved
       // config — it's the escape hatch to reopen setup. #95: also show it

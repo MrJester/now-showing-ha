@@ -3,25 +3,19 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
-## 2.3.5-fix.2 - 2026-07-03 (fork)
+## 2.3.5-fix.4 - 2026-07-03 (fork)
 
 ### Added
 
-- `visual_show_poster_title` toggle: hide the title/subtitle overlay on the
-  poster's bottom-left (useful when the info panel is pinned to "always" and
-  the title would render twice). Defaults on — no visual change unless you
-  turn it off.
-
-## 2.3.5-fix.1 - 2026-07-03 (fork)
+- Hover/tap help tooltips on every setup-overlay field (info icon next to each
+  label), replacing the always-visible hint clutter. Dynamic status hints
+  (backend/player/TMDB) stay visible.
 
 ### Fixed
 
-- SSE `/api/events` broadcast `data: null` whenever any unrelated
-  media_player changed state, blanking kiosks mid-playback. The broadcast now
-  recomputes over all entity states (same as `/api/state`), debounced 300ms.
-  (Upstream PR #109 / issue #108.)
-- SSRF hardening: `/api/artwork` restricted to artwork path prefixes;
-  dot-segment traversal rejected on both artwork proxies. (Upstream PR #110.)
+- Checkbox fields in a two-column grid now stretch to their cell height so a
+  checkbox next to a taller select/field aligns cleanly (e.g. Ken Burns / Title
+  on poster row).
 
 ## 2.3.5-fix.3 - 2026-07-03 (fork)
 
