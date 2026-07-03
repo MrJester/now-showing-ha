@@ -2468,6 +2468,13 @@
               Ken Burns poster pan
             </label>
           </div>
+          <div class="setup-field">
+            <label class="setup-check" for="cfgVisualShowPosterTitle">
+              <input id="cfgVisualShowPosterTitle" type="checkbox">
+              Title on poster
+            </label>
+            <div class="hint">Title/subtitle overlaid on the poster's bottom-left. Turn off if the info panel is pinned open and the title reads twice.</div>
+          </div>
         </div>
 
         <div class="setup-section-title">Info Panel</div>
@@ -3375,6 +3382,7 @@
     const SETUP_CHECKBOX_FIELDS = [
       ['landscape', 'cfgLandscape', LANDSCAPE_MODE],
       ['visualProgressBar', 'cfgVisualProgressBar', false],
+      ['visualShowPosterTitle', 'cfgVisualShowPosterTitle', true],
       ['visualRatingsBadges', 'cfgVisualRatingsBadges', false],
       ['visualGenreChips', 'cfgVisualGenreChips', false],
       ['visualUseBackdrops', 'cfgVisualUseBackdrops', false],
@@ -3498,6 +3506,7 @@
       'cfgVisualMarqueeBgColorPicker',
       'cfgVisualCornerRadiusPx',
       'cfgVisualProgressBar',
+      'cfgVisualShowPosterTitle',
       'cfgVisualRatingsBadges',
       'cfgVisualGenreChips',
       'cfgVisualInfoPanelMode',
@@ -3695,6 +3704,11 @@
         fillFromServer('cfgComingSoonIncludeCinemaReleases', cs2.includeCinemaReleases);
       }
       fillFromServer('cfgTmdbRegion', tmdb2.region);
+      // Poster-title toggle: reflect the server's real value so the checkbox
+      // matches what the kiosk actually renders (default true when unset).
+      if (body.visual && typeof body.visual.showPosterTitle === 'boolean') {
+        fillFromServer('cfgVisualShowPosterTitle', body.visual.showPosterTitle);
+      }
       // Re-run dependent toggles in case we just filled the backend/displayMode.
       try {
         syncSetupDisplayModeFields();
@@ -4347,6 +4361,7 @@
         },
         visual: {
           progressBar: bool('cfgVisualProgressBar'),
+          showPosterTitle: bool('cfgVisualShowPosterTitle'),
           ratingsBadges: bool('cfgVisualRatingsBadges'),
           genreChips: bool('cfgVisualGenreChips'),
           useBackdrops: bool('cfgVisualUseBackdrops'),
