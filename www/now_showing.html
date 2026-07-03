@@ -1665,12 +1665,10 @@
       color: var(--accent-light);
       margin-bottom: 4px;
     }
-    /* Checkbox fields inside a grid stretch to their cell height so a checkbox
-       next to a taller select/field aligns cleanly instead of floating at the
-       top of the row. */
-    .setup-field-grid { align-items: stretch; }
-    .setup-field-grid > .setup-field { margin-bottom: 0; display: flex; flex-direction: column; }
-    .setup-field-grid > .setup-field > .setup-check { flex: 1 1 auto; }
+    /* Grid cells align to the top and keep their natural height, so a checkbox
+       box stays the same size as its neighbours instead of stretching to match
+       a taller field (e.g. a select) in the same row. */
+    .setup-field-grid { align-items: start; }
     /* Info-icon tooltip (injected next to labels by applySetupTooltips). */
     .setup-tip {
       display: inline-flex; align-items: center; justify-content: center;

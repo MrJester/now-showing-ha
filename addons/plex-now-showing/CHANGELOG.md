@@ -3,6 +3,15 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.5 - 2026-07-03 (fork)
+
+### Fixed
+
+- Setup-overlay checkbox boxes are now uniform height. fix.4 stretched a
+  checkbox to match a taller field in the same grid row (e.g. Film Grain next
+  to Poster Framing grew tall); grid cells now top-align at their natural
+  height so every checkbox box matches its neighbours.
+
 ## 2.3.5-fix.4 - 2026-07-03 (fork)
 
 ### Added
@@ -13,9 +22,7 @@ The project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- Checkbox fields in a two-column grid now stretch to their cell height so a
-  checkbox next to a taller select/field aligns cleanly (e.g. Ken Burns / Title
-  on poster row).
+- Setup-overlay alignment pass for grid checkbox fields (superseded by fix.5).
 
 ## 2.3.5-fix.3 - 2026-07-03 (fork)
 
