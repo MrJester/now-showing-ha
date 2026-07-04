@@ -95,6 +95,7 @@ export const OVERLAY_VISUAL_KEYS = [
   'nightModeEntity',
   'nightModeOpacity',
   'theme',
+  'layout',
   'accentColor',
   'marqueeBgColor',
   'cornerRadiusPx',

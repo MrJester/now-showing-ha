@@ -244,6 +244,12 @@ configuration:
     description: >-
       How dark the overnight overlay is. 0.4 reads as clearly dimmed but
       the title is still legible from across the room. Range 0–0.95.
+  visual_layout:
+    name: Layout
+    description: >-
+      Screen arrangement, independent of the color theme. "classic" keeps
+      the marquee banner + poster layout; "cinematic" fills the screen with
+      fanart/backdrop art and a large corner title.
   visual_theme:
     name: Visual theme preset
     description: >-

@@ -9,7 +9,7 @@
 # Docs on each field: https://developers.home-assistant.io/docs/add-ons/configuration
 
 name: Now Showing
-version: "2.3.5-fix.9"
+version: "2.3.5-fix.10"
 slug: plex_now_showing
 description: Cinema-style now-playing and coming-soon kiosk for Home Assistant.
 url: https://github.com/rusty4444/now-showing-ha
@@ -110,6 +110,7 @@ options:
   # (#62/#viz-13). All are presentation-only and safe to leave at defaults.
   # Colours are strict #RRGGBB overrides; empty = theme default.
   visual_theme: classic-gold
+  visual_layout: classic
   visual_accent_color: ""
   visual_marquee_bg_color: ""
   visual_corner_radius_px: 0
@@ -170,6 +171,7 @@ schema:
   visual_night_mode_entity: "str?"
   visual_night_mode_opacity: "float(0,0.95)"
   visual_theme: "list(classic-gold|art-deco-silver|neon-80s|minimalist-dark|film-noir|velvet-crimson|technicolor|drive-in-dusk|emerald-deco|midnight-imax|rose-gold|grindhouse|phosphor-terminal|vaporwave|miami-deco|golden-silent|cosmic|molten|frostbite|solaris)"
+  visual_layout: "list(classic|cinematic)"
   visual_accent_color: "str?"
   visual_marquee_bg_color: "str?"
   visual_corner_radius_px: "int(0,48)"

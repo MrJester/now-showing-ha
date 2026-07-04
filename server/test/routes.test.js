@@ -178,6 +178,7 @@ test('GET /api/config defaults every visual toggle off', async () => {
         nightModeEntity: '',
         nightModeOpacity: 0.4,
         theme: 'classic-gold',
+        layout: 'classic',
         accentColor: '',
         marqueeBgColor: '',
         cornerRadiusPx: 0,

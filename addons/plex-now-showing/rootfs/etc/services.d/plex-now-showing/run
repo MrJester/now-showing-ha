@@ -101,6 +101,7 @@ export_opt VISUAL_NIGHT_MODE_OPACITY  visual_night_mode_opacity
 # classic-gold|art-deco-silver|neon-80s|minimalist-dark; accent colour is
 # a strict #RRGGBB override (empty = use theme's default ramp).
 export_opt VISUAL_THEME               visual_theme
+export_opt VISUAL_LAYOUT              visual_layout
 export_opt VISUAL_ACCENT_COLOR        visual_accent_color
 export_opt VISUAL_MARQUEE_BG_COLOR    visual_marquee_bg_color
 export_opt VISUAL_CORNER_RADIUS_PX    visual_corner_radius_px

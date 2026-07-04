@@ -3,6 +3,23 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.10 - 2026-07-03 (fork)
+
+### Added
+
+- Layout templates as a new `visual_layout` setting, independent of the colour
+  theme. Stage 1 ships `classic` (default, unchanged) and `cinematic` — a
+  full-bleed artwork ground with a corner marquee label and an oversized hero
+  title, tuned for portrait screens. Selectable from the setup overlay's new
+  Layout dropdown and the add-on Configuration tab. More layouts (Spotlight,
+  Split, Lobby, Now-Playing Bar) + the poster/icon kit to follow.
+
+### Fixed
+
+- Saving one of the 16 new theme presets from the in-app setup overlay was
+  silently rejected — the overlay POST validator still listed only the original
+  4 themes. It now accepts all 20.
+
 ## 2.3.5-fix.9 - 2026-07-03 (fork)
 
 ### Fixed

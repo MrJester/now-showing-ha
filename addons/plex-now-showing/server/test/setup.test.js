@@ -361,6 +361,23 @@ test('showPosterTitle defaults on when no overlay override is set', () => {
   assert.equal(effectiveSetupView(envBaseConfig()).visual.showPosterTitle, true);
 });
 
+test('visual layout round-trips through the overlay and defaults to classic', () => {
+  assert.equal(effectiveSetupView(envBaseConfig()).visual.layout, 'classic');
+
+  const { overlay, errors } = sanitizeOverlayInput({ visual: { layout: 'cinematic' } });
+  assert.equal(errors.length, 0);
+  assert.equal(overlay.visual.layout, 'cinematic');
+  const merged = applyOverlay(envBaseConfig(), overlay);
+  assert.equal(merged.visual.layout, 'cinematic');
+  assert.equal(effectiveSetupView(merged).visual.layout, 'cinematic');
+});
+
+test('an invalid layout is rejected, not persisted', () => {
+  const { overlay, errors } = sanitizeOverlayInput({ visual: { layout: 'bogus' } });
+  assert.ok(errors.includes('visual_layout_invalid'));
+  assert.equal('layout' in (overlay.visual || {}), false);
+});
+
 test('mergeOverlay preserves existing secrets when blank, drops blank non-secrets', () => {
   const existing = {
     plexUrl: 'http://old',

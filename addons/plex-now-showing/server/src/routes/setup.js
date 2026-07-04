@@ -37,7 +37,8 @@ const INFO_PANEL_MODES = ['on_tap', 'on_pause', 'always'];
 const FRAME_STYLES = ['bulbs', 'gold-line', 'none'];
 const MARQUEE_FONTS = ['bebas-neue', 'anton', 'oswald', 'monoton', 'playfair-display'];
 const BACKDROP_STYLES = ['fullscreen', 'ambient'];
-const VISUAL_THEMES = ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark'];
+const VISUAL_THEMES = ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris'];
+const VISUAL_LAYOUTS = ['classic', 'cinematic'];
 const POSTER_FRAMINGS = ['centred', 'cover', 'matted'];
 
 const HEX_RE = /^#[0-9a-f]{6}$/;
@@ -282,6 +283,12 @@ export function sanitizeOverlayInput(body) {
           if (s !== null) out.visual[k] = s;
           break;
         }
+        case 'layout': {
+          const s = asString(raw);
+          if (s && !VISUAL_LAYOUTS.includes(s)) { errors.push('visual_layout_invalid'); break; }
+          if (s !== null) out.visual[k] = s;
+          break;
+        }
         case 'bulbSizePx': {
           const n = clampInt(raw, 12, 48);
           if (n === null) { errors.push('visual_bulbSizePx_invalid'); break; }
@@ -475,6 +482,7 @@ export function effectiveSetupView(config) {
       nightModeEntity: config.visual?.nightModeEntity || '',
       nightModeOpacity: config.visual?.nightModeOpacity ?? 0.4,
       theme: config.visual?.theme || 'classic-gold',
+      layout: config.visual?.layout || 'classic',
       accentColor: config.visual?.accentColor || '',
       marqueeBgColor: config.visual?.marqueeBgColor || '',
       cornerRadiusPx: config.visual?.cornerRadiusPx ?? 0,

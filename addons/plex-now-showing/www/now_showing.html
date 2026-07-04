@@ -1440,6 +1440,77 @@
       letter-spacing: 0.04em;
     }
 
+    /* ===== LAYOUT TEMPLATES =====
+       Independent of the colour theme (body[data-theme]). 'classic' is the
+       default arrangement and adds no overrides here. 'cinematic' turns the
+       artwork into a full-bleed ground with a corner marquee label and an
+       oversized hero title — best on a portrait screen. */
+    body[data-layout="cinematic"] .bulbs-outer,
+    body[data-layout="cinematic"] .poster-bg-blur { display: none; }
+    body[data-layout="cinematic"] .poster-section {
+      border: none;
+      border-radius: 0;
+    }
+    /* Artwork fills the frame instead of letterboxing. */
+    body[data-layout="cinematic"] .poster-area,
+    body[data-layout="cinematic"] .poster-area-next {
+      background-size: cover !important;
+      background-position: center !important;
+    }
+    /* Marquee collapses to a small top-left eyebrow, out of flow so the
+       poster fills the whole frame. */
+    body[data-layout="cinematic"] .marquee {
+      position: absolute;
+      top: 3.5%;
+      left: 5%;
+      width: auto;
+      height: auto;
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+      z-index: 4;
+    }
+    body[data-layout="cinematic"] .marquee-bg { display: none; }
+    body[data-layout="cinematic"] .marquee-text h1 {
+      font-size: clamp(0.72rem, 2.2vw, 1.15rem);
+      letter-spacing: 0.34em;
+      color: var(--accent-light);
+      opacity: 0.9;
+      text-shadow:
+        0 0 10px color-mix(in srgb, var(--accent-glow) 55%, transparent),
+        0 2px 6px rgba(0, 0, 0, 0.8);
+    }
+    /* Legibility scrim + a matching top fade for the eyebrow. */
+    body[data-layout="cinematic"] .poster-section::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.30) 42%, transparent 72%),
+        linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 18%);
+    }
+    /* Our scrim replaces the classic poster overlay. */
+    body[data-layout="cinematic"] .poster-overlay { display: none !important; }
+    /* Oversized hero title, always shown in this layout. */
+    body[data-layout="cinematic"] .poster-title {
+      display: block !important;
+      left: 5%;
+      right: 5%;
+      bottom: 6%;
+      z-index: 3;
+    }
+    body[data-layout="cinematic"] .poster-title h2 {
+      font-size: clamp(2rem, 7vw, 4.6rem);
+      line-height: 1.02;
+    }
+    body[data-layout="cinematic"] .poster-title .subtitle {
+      font-size: clamp(0.9rem, 2.4vw, 1.4rem);
+      margin-top: 6px;
+    }
+    body[data-layout="cinematic"] .media-info { z-index: 5; }
+
     /* ===== MEDIA INFO (bottom-right) ===== */
     .media-info {
       position: absolute;
@@ -2692,6 +2763,15 @@
         </div>
         <div class="setup-field-grid">
           <div class="setup-field">
+            <label for="cfgVisualLayout">Layout</label>
+            <select id="cfgVisualLayout" autocomplete="off">
+              <option value="classic">Classic Marquee</option>
+              <option value="cinematic">Full-Bleed Cinematic</option>
+            </select>
+          </div>
+        </div>
+        <div class="setup-field-grid">
+          <div class="setup-field">
             <label for="cfgVisualTheme">Theme Preset</label>
             <select id="cfgVisualTheme" autocomplete="off">
               <optgroup label="Refined">
@@ -3262,6 +3342,7 @@
     // #23 — theme presets. Must mirror the enum in server/src/config.js.
     // Adding one here without updating the server will leak through (the
     // setup page reads localStorage), but the add-on schema will reject it.
+    const VISUAL_LAYOUTS = ['classic', 'cinematic'];
     const VISUAL_THEMES = ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris'];
     // VISUAL holds the resolved values for every visual toggle. Defaults
     // mirror the server-side defaults so a hard-refresh before /api/config
@@ -3293,6 +3374,7 @@
       // #23 theme preset + #66 accent colour. Empty accentColor means "use
       // the active theme's default".
       theme: 'classic-gold',
+      layout: 'classic',
       accentColor: '',
       marqueeBgColor: '',
       cornerRadiusPx: 0,
@@ -3348,6 +3430,12 @@
     function readVisualTheme(defaultValue) {
       const value = String(readConfig('visualTheme')).trim().toLowerCase();
       if (value && VISUAL_THEMES.includes(value)) return value;
+      return defaultValue;
+    }
+
+    function readVisualLayout(defaultValue) {
+      const value = String(readConfig('visualLayout')).trim().toLowerCase();
+      if (value && VISUAL_LAYOUTS.includes(value)) return value;
       return defaultValue;
     }
 
@@ -3414,6 +3502,7 @@
       if (v && typeof v.nightModeEntity === 'string') VISUAL.nightModeEntity = v.nightModeEntity;
       if (v && Number.isFinite(v.nightModeOpacity)) VISUAL.nightModeOpacity = v.nightModeOpacity;
       if (v && typeof v.theme === 'string' && VISUAL_THEMES.includes(v.theme)) VISUAL.theme = v.theme;
+      if (v && typeof v.layout === 'string' && VISUAL_LAYOUTS.includes(v.layout)) VISUAL.layout = v.layout;
       if (v && typeof v.accentColor === 'string') {
         const c = v.accentColor.trim().toLowerCase();
         if (c === '' || HEX_RE.test(c)) VISUAL.accentColor = c;
@@ -3465,6 +3554,7 @@
       // #23/#66 theme + accent. Local resolution first; server overrides
       // below if /api/config responds with non-empty values.
       VISUAL.theme = readVisualTheme('classic-gold');
+      VISUAL.layout = readVisualLayout('classic');
       VISUAL.accentColor = readAccentColor('');
       VISUAL.marqueeBgColor = readMarqueeBgColor('');
       VISUAL.cornerRadiusPx = readIntClamped('visualCornerRadiusPx', 0, 0, 48);
@@ -3644,6 +3734,7 @@
       // the rest. Re-applied on every call so swapping theme at runtime
       // (setup form save, hash change) takes effect without reload.
       document.body.dataset.theme = VISUAL.theme;
+      document.body.dataset.layout = VISUAL.layout;
 
       // #66 accent colour override — written as an inline custom property
       // so the body[style*="--accent-override"] selector can derive a full
@@ -3695,6 +3786,7 @@
       ['comingSoonImageType', 'cfgComingSoonImageType', 'poster'],
       ['tmdbRegion', 'cfgTmdbRegion', 'AU'],
       ['visualTheme', 'cfgVisualTheme', 'classic-gold'],
+      ['visualLayout', 'cfgVisualLayout', 'classic'],
       ['visualFrameStyle', 'cfgVisualFrameStyle', 'bulbs'],
       ['visualBulbSizePx', 'cfgVisualBulbSizePx', '28'],
       ['visualMarqueeFont', 'cfgVisualMarqueeFont', 'bebas-neue'],
@@ -4025,6 +4117,7 @@
     };
     const SETUP_VISUAL_FIELD_IDS = [
       'cfgVisualTheme',
+      'cfgVisualLayout',
       'cfgVisualFrameStyle',
       'cfgVisualBulbSizePx',
       'cfgVisualMarqueeFont',
@@ -4236,6 +4329,9 @@
       // matches what the kiosk actually renders (default true when unset).
       if (body.visual && typeof body.visual.showPosterTitle === 'boolean') {
         fillFromServer('cfgVisualShowPosterTitle', body.visual.showPosterTitle);
+      }
+      if (body.visual && typeof body.visual.layout === 'string') {
+        fillFromServer('cfgVisualLayout', body.visual.layout);
       }
       // Re-run dependent toggles in case we just filled the backend/displayMode.
       try {
@@ -4902,6 +4998,7 @@
           kenBurns: bool('cfgVisualKenBurns'),
           backdropStyle: val('cfgVisualBackdropStyle'),
           theme: val('cfgVisualTheme'),
+          layout: val('cfgVisualLayout'),
           nightModeEntity: val('cfgVisualNightModeEntity'),
           accentColor: accentColor,
           marqueeBgColor: marqueeBgColor,
@@ -4989,6 +5086,7 @@
       cfgPlexUrl: "Plex server URL. Enables the info panel's media details (resolution, codec, HDR, audio).",
       cfgPlexToken: 'Plex X-Plex-Token. Required if a Plex URL is set. Never sent to the browser.',
       cfgLandscape: 'Force the landscape layout that fits the whole poster, regardless of screen orientation.',
+      cfgVisualLayout: 'Screen arrangement, independent of the color theme. Classic keeps the marquee/poster layout; Cinematic fills the screen with fanart and a large corner title.',
       cfgVisualTheme: 'Overall look-and-feel preset for colors and ornamentation.',
       cfgVisualFrameStyle: 'Screen-edge frame: animated bulbs, a thin gold line, or none.',
       cfgVisualBulbSizePx: 'Diameter of each marquee bulb (12–48px). Only applies when Frame Style is Bulbs.',

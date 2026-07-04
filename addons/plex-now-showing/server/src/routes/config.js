@@ -104,6 +104,7 @@ export function configRoute({ config }) {
         // so safe to expose; the frontend turns them into <body data-theme>
         // + a single CSS custom property override.
         theme: config.visual?.theme || 'classic-gold',
+        layout: config.visual?.layout || 'classic',
         accentColor: config.visual?.accentColor || '',
         marqueeBgColor: config.visual?.marqueeBgColor || '',
         cornerRadiusPx: config.visual?.cornerRadiusPx ?? 0,
