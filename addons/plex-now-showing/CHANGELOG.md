@@ -3,6 +3,17 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.9 - 2026-07-03 (fork)
+
+### Fixed
+
+- Theme-preview contents now scale with the preview stage. The marquee and
+  title were sized in viewport units and the rest in fixed px/rem, so flipping
+  to Portrait shrank the box but left the text landscape-sized. The stage is
+  now a query container and its contents use container units, so everything
+  resizes proportionally in both orientations. Portrait also uses a shorter
+  marquee band for a more kiosk-like proportion.
+
 ## 2.3.5-fix.8 - 2026-07-03 (fork)
 
 ### Added
