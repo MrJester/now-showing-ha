@@ -2293,6 +2293,31 @@
       font-size: 0.72rem;
       text-align: center;
     }
+    /* Preview orientation toggle (landscape / portrait) */
+    .setup-preview-orient {
+      display: inline-flex; gap: 0; margin: 0 0 12px;
+      border: 1px solid color-mix(in srgb, var(--accent-mid) 30%, transparent);
+      border-radius: 8px; overflow: hidden;
+    }
+    .setup-orient-btn {
+      appearance: none; cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: 0.76rem;
+      letter-spacing: 0.04em; padding: 7px 16px;
+      background: transparent; color: var(--text-dim); border: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .setup-orient-btn + .setup-orient-btn { border-left: 1px solid color-mix(in srgb, var(--accent-mid) 30%, transparent); }
+    .setup-orient-btn:hover { color: var(--text-light); }
+    .setup-orient-btn.active { background: var(--accent-light); color: #14110a; font-weight: 600; }
+    .setup-orient-btn:focus-visible { outline: 2px solid var(--accent-light); outline-offset: -2px; }
+    /* Portrait: shrink the whole preview card (so the bulb frame still hugs the
+       stage) and stand the stage up 9:16. */
+    .setup-visual-preview[data-orientation="portrait"] {
+      max-width: 280px; margin-left: auto; margin-right: auto;
+    }
+    .setup-visual-preview[data-orientation="portrait"] .setup-preview-stage {
+      aspect-ratio: 9 / 16; min-height: 0;
+    }
     .setup-copy {
       min-height: 130px;
       resize: vertical;
@@ -2630,7 +2655,11 @@
 
       <div class="setup-tab-panel" id="setupPanelDisplay" role="tabpanel" aria-labelledby="setupTabDisplay" data-setup-panel="display">
         <div class="setup-section-title">Theme</div>
-        <div class="setup-visual-preview" id="setupVisualPreview" data-frame-style="bulbs" aria-live="polite">
+        <div class="setup-preview-orient" role="group" aria-label="Preview orientation">
+          <button type="button" class="setup-orient-btn active" data-orient="landscape" aria-pressed="true">Landscape</button>
+          <button type="button" class="setup-orient-btn" data-orient="portrait" aria-pressed="false">Portrait</button>
+        </div>
+        <div class="setup-visual-preview" id="setupVisualPreview" data-frame-style="bulbs" data-orientation="landscape" aria-live="polite">
           <div class="setup-preview-bulbs" aria-hidden="true"></div>
           <div class="setup-preview-stage">
             <div class="setup-preview-marquee"><span id="setupPreviewMarquee">NOW SHOWING</span></div>
@@ -5065,6 +5094,22 @@
         if (!input) continue;
         input.addEventListener('input', syncSetupVisualPreview);
         input.addEventListener('change', syncSetupVisualPreview);
+      }
+      // Preview orientation toggle — flip the preview between landscape and
+      // portrait so a theme can be judged in either screen shape.
+      for (const btn of document.querySelectorAll('.setup-orient-btn')) {
+        btn.addEventListener('click', () => {
+          const preview = document.getElementById('setupVisualPreview');
+          if (!preview) return;
+          preview.dataset.orientation = btn.dataset.orient;
+          document.querySelectorAll('.setup-orient-btn').forEach(b => {
+            const on = b === btn;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-pressed', String(on));
+          });
+          // Re-render after the new geometry settles so bulbs re-frame.
+          requestAnimationFrame(syncSetupVisualPreview);
+        });
       }
       for (const id of ['cfgVisualUseBackdrops', 'cfgVisualBurnInMitigation']) {
         const input = document.getElementById(id);

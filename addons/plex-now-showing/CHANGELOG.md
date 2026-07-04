@@ -3,6 +3,14 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.8 - 2026-07-03 (fork)
+
+### Added
+
+- Landscape/Portrait toggle above the setup-overlay theme preview, so a theme
+  can be judged in either screen shape before saving. Portrait stands the
+  preview up 9:16 and re-frames the bulbs to match.
+
 ## 2.3.5-fix.7 - 2026-07-03 (fork)
 
 ### Added
