@@ -177,7 +177,7 @@ export function loadConfig(env = process.env) {
       // Composes with the per-axis controls below; explicit values beat
       // preset defaults.
       theme: parseEnum(env.VISUAL_THEME,
-        ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark'],
+        ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris'],
         'classic-gold'),
       // Accent colour override (#66). Drives --accent-light/mid/dark/glow,
       // which the marquee trim, gold-line frame, ratings highlight and chip

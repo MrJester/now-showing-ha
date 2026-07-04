@@ -3,6 +3,18 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.7 - 2026-07-03 (fork)
+
+### Added
+
+- Theme presets expanded from 4 to 20, grouped in the setup dropdown as
+  Refined (Classic Gold, Art Deco Silver, Neon 80s, Minimalist Dark), New
+  cinema (Film Noir, Velvet Crimson, Technicolor, Drive-In Dusk, Emerald Deco,
+  Midnight IMAX, Rose Gold, Grindhouse), and Creative (Phosphor Terminal,
+  Vaporwave, Miami Deco, Golden Silent, Cosmic, Molten, Frostbite, Solaris).
+  Default stays Classic Gold; unknown values fall back to it. Each theme is a
+  CSS-variable set, so switching stays instant with no added weight.
+
 ## 2.3.5-fix.6 - 2026-07-03 (fork)
 
 ### Fixed
