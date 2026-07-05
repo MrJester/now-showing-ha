@@ -3,6 +3,14 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.11 - 2026-07-05 (fork)
+
+### Added
+
+- The setup-overlay live preview now reflects the selected layout — switching
+  Layout to Cinematic restyles the mini preview (full-bleed art, corner
+  marquee, oversized title) so you can judge it before saving.
+
 ## 2.3.5-fix.10 - 2026-07-03 (fork)
 
 ### Added

@@ -2382,6 +2382,35 @@
     .setup-orient-btn:hover { color: var(--text-light); }
     .setup-orient-btn.active { background: var(--accent-light); color: #14110a; font-weight: 600; }
     .setup-orient-btn:focus-visible { outline: 2px solid var(--accent-light); outline-offset: -2px; }
+    /* Cinematic layout in the mini preview: art fills the stage, marquee
+       becomes a corner eyebrow, oversized title bottom-left over a scrim. */
+    .setup-visual-preview[data-layout="cinematic"] .setup-preview-marquee {
+      position: absolute; top: 6%; left: 6%; height: auto; width: auto;
+      border: none; background: none; padding: 0; z-index: 4;
+    }
+    .setup-visual-preview[data-layout="cinematic"] .setup-preview-marquee span {
+      font-size: clamp(0.5rem, 2.6cqi, 0.85rem);
+      color: var(--preview-accent-light); letter-spacing: 0.22em;
+    }
+    .setup-visual-preview[data-layout="cinematic"] .setup-preview-poster { height: 100%; }
+    .setup-visual-preview[data-layout="cinematic"] .setup-preview-art {
+      left: 0; top: 0; right: 0; bottom: 0; width: auto;
+      border: none; border-radius: 0; box-shadow: none;
+      background:
+        radial-gradient(120% 90% at 72% 20%, color-mix(in srgb, var(--preview-accent-glow) 34%, #ff9a4d), transparent 48%),
+        linear-gradient(160deg, color-mix(in srgb, var(--preview-accent-mid) 34%, #243247), #0b0e14 66%);
+    }
+    .setup-visual-preview[data-layout="cinematic"] .setup-preview-poster::after {
+      content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,.28) 46%, transparent 74%);
+    }
+    .setup-visual-preview[data-layout="cinematic"] .setup-preview-copy {
+      left: 6%; right: 6%; top: auto; bottom: 6%; z-index: 3;
+    }
+    .setup-visual-preview[data-layout="cinematic"] .setup-preview-title {
+      font-size: clamp(1rem, 7cqi, 2.4rem);
+    }
+
     /* Portrait: shrink the whole preview card (so the bulb frame still hugs the
        stage) and stand the stage up 9:16. */
     .setup-visual-preview[data-orientation="portrait"] {
@@ -4714,6 +4743,8 @@
       for (const [key, value] of Object.entries(vars)) preview.style.setProperty(key, value);
 
       preview.dataset.frameStyle = FRAME_STYLES.includes(frameStyle) ? frameStyle : 'bulbs';
+      const layout = document.getElementById('cfgVisualLayout')?.value || 'classic';
+      preview.dataset.layout = VISUAL_LAYOUTS.includes(layout) ? layout : 'classic';
       renderSetupPreviewBulbs(preview, bulbSize);
       preview.classList.toggle('progress-on', !!document.getElementById('cfgVisualProgressBar')?.checked);
       preview.classList.toggle('ratings-on', !!document.getElementById('cfgVisualRatingsBadges')?.checked);
@@ -4729,6 +4760,7 @@
       if (caption) {
         const bits = [
           theme.label,
+          layout === 'cinematic' ? 'Cinematic layout' : 'Classic layout',
           accent ? `Accent ${accent}` : 'Theme accent',
           marqueeBg ? `Marquee bg ${marqueeBg}` : 'Theme marquee',
           frameStyle,
