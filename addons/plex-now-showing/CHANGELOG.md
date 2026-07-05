@@ -3,6 +3,18 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.12 - 2026-07-05 (fork)
+
+### Fixed
+
+- Visual settings not sticking (poster framing, theme, frame style, font,
+  backdrop, bulb size, corner radius, info-panel toggles, …). The setup overlay
+  only hydrated two visual fields from the server; every other visual control
+  fell back to this browser's local storage / defaults, so saving from a device
+  without local values silently overwrote the server's real settings. The
+  overlay now hydrates all visual settings from `/api/config` on open, so it
+  reflects the saved config on every device and Save no longer clobbers.
+
 ## 2.3.5-fix.11 - 2026-07-05 (fork)
 
 ### Added

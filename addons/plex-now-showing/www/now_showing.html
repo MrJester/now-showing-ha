@@ -4354,18 +4354,58 @@
         fillFromServer('cfgComingSoonIncludeCinemaReleases', cs2.includeCinemaReleases);
       }
       fillFromServer('cfgTmdbRegion', tmdb2.region);
-      // Poster-title toggle: reflect the server's real value so the checkbox
-      // matches what the kiosk actually renders (default true when unset).
-      if (body.visual && typeof body.visual.showPosterTitle === 'boolean') {
-        fillFromServer('cfgVisualShowPosterTitle', body.visual.showPosterTitle);
+
+      // Hydrate ALL visual settings from the server so the overlay reflects the
+      // saved config on every device. Without this, a browser without local
+      // values shows form defaults, and saving would clobber the server's real
+      // settings (e.g. poster framing snapping back to "centred").
+      const vis = body.visual || {};
+      const visSelect = {
+        cfgVisualTheme: 'theme', cfgVisualLayout: 'layout', cfgVisualFrameStyle: 'frameStyle',
+        cfgVisualMarqueeFont: 'marqueeFont', cfgVisualPosterFraming: 'posterFraming',
+        cfgVisualInfoPanelMode: 'infoPanelMode', cfgVisualBackdropStyle: 'backdropStyle',
+      };
+      for (const [id, key] of Object.entries(visSelect)) {
+        if (typeof vis[key] === 'string' && vis[key]) fillFromServer(id, vis[key]);
       }
-      if (body.visual && typeof body.visual.layout === 'string') {
-        fillFromServer('cfgVisualLayout', body.visual.layout);
+      const visText = {
+        cfgVisualAccentColor: 'accentColor', cfgVisualMarqueeBgColor: 'marqueeBgColor',
+        cfgVisualNightModeEntity: 'nightModeEntity',
+      };
+      for (const [id, key] of Object.entries(visText)) {
+        if (typeof vis[key] === 'string') fillFromServer(id, vis[key]);
       }
-      // Re-run dependent toggles in case we just filled the backend/displayMode.
+      const visNum = {
+        cfgVisualBulbSizePx: 'bulbSizePx', cfgVisualCornerRadiusPx: 'cornerRadiusPx',
+        cfgVisualBackdropDelayMs: 'backdropDelayMs', cfgVisualNudgeIntervalMs: 'nudgeIntervalMs',
+        cfgVisualNudgeAmplitudePx: 'nudgeAmplitudePx', cfgVisualNightModeOpacity: 'nightModeOpacity',
+      };
+      for (const [id, key] of Object.entries(visNum)) {
+        if (Number.isFinite(vis[key])) fillFromServer(id, vis[key]);
+      }
+      const visBool = {
+        cfgVisualProgressBar: 'progressBar', cfgVisualShowPosterTitle: 'showPosterTitle',
+        cfgVisualRatingsBadges: 'ratingsBadges', cfgVisualGenreChips: 'genreChips',
+        cfgVisualUseBackdrops: 'useBackdrops', cfgVisualBurnInMitigation: 'burnInMitigation',
+        cfgVisualFilmGrain: 'filmGrain', cfgVisualKenBurns: 'kenBurns',
+        cfgVisualInfoShowTitle: 'infoShowTitle', cfgVisualInfoShowSubtitle: 'infoShowSubtitle',
+        cfgVisualInfoShowMeta: 'infoShowMeta', cfgVisualInfoShowSummary: 'infoShowSummary',
+        cfgVisualInfoShowTechbox: 'infoShowTechbox', cfgVisualInfoShowPlayer: 'infoShowPlayer',
+      };
+      for (const [id, key] of Object.entries(visBool)) {
+        if (typeof vis[key] === 'boolean') fillFromServer(id, vis[key]);
+      }
+
+      // Re-run dependent toggles/derived controls now that server values are in.
       try {
         syncSetupDisplayModeFields();
         syncSetupBackendFields();
+        syncSetupVisualFields();
+        syncBulbSizeField();
+        syncCornerRadiusField();
+        syncAccentPickerFromText();
+        syncMarqueeBgPickerFromText();
+        syncSetupVisualPreview();
       } catch (_) { /* form not ready */ }
     }
 
