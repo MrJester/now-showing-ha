@@ -9,7 +9,7 @@
 # Docs on each field: https://developers.home-assistant.io/docs/add-ons/configuration
 
 name: Now Showing
-version: "2.3.5-fix.13"
+version: "2.3.5-fix.14"
 slug: plex_now_showing
 description: Cinema-style now-playing and coming-soon kiosk for Home Assistant.
 url: https://github.com/rusty4444/now-showing-ha
@@ -86,6 +86,7 @@ options:
   # keep the original look until the user opts in.
   visual_progress_bar: false
   visual_show_poster_title: true
+  visual_show_media_info: true
   visual_ratings_badges: false
   visual_genre_chips: false
   visual_info_panel_mode: on_tap
@@ -156,6 +157,7 @@ schema:
       stopped_url: "url?"
   visual_progress_bar: "bool"
   visual_show_poster_title: "bool"
+  visual_show_media_info: "bool"
   visual_ratings_badges: "bool"
   visual_genre_chips: "bool"
   visual_info_panel_mode: "list(on_tap|on_pause|always)"

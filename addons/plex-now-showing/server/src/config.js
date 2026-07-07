@@ -103,6 +103,9 @@ export function loadConfig(env = process.env) {
       // ON to preserve the original look; turn off when the info panel is
       // pinned open and the title would otherwise render twice.
       showPosterTitle: parseBool(env.VISUAL_SHOW_POSTER_TITLE, true),
+      // Corner type/state/player badge over the poster. Default on; turn off
+      // when the info panel already surfaces this to avoid duplication.
+      showMediaInfo: parseBool(env.VISUAL_SHOW_MEDIA_INFO, true),
       ratingsBadges: parseBool(env.VISUAL_RATINGS_BADGES, false),
       // Render genre chips (Action, Sci-Fi, …) next to the content rating.
       // Populated from Plex metadata (item.Genre[]); empty for personal media.

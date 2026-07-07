@@ -155,6 +155,11 @@ configuration:
       Adds a slim gold progress bar along the bottom of the poster while
       something is playing. Freezes while paused, disappears when idle.
       Off by default; flip on to enable.
+  visual_show_media_info:
+    name: Status badge
+    description: >-
+      The corner badge showing media type, play/pause state, and player
+      name. On by default. Turn off if the info panel already surfaces this.
   visual_show_poster_title:
     name: Show title on poster
     description: >-

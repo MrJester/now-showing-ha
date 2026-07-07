@@ -1521,6 +1521,9 @@
       transition: opacity 0.6s ease, bottom 0.4s ease;
       z-index: 6;
     }
+    /* Status badge toggle (visual_show_media_info): hide the corner
+       type/state/player badge, e.g. when the info panel already shows it. */
+    body.hide-media-info .media-info { display: none !important; }
     /* Keep the player-name/media-type block clear of the progress bar too. */
     body.visual-progress-bar .media-info {
       bottom: calc(2.8vh + 8px + 18px);
@@ -2920,6 +2923,12 @@
               Title on poster
             </label>
           </div>
+          <div class="setup-field">
+            <label class="setup-check" for="cfgVisualShowMediaInfo">
+              <input id="cfgVisualShowMediaInfo" type="checkbox">
+              Status badge
+            </label>
+          </div>
         </div>
 
         <div class="setup-section-title">Info Panel</div>
@@ -3379,6 +3388,7 @@
     const VISUAL = {
       progressBar: false,
       showPosterTitle: true,
+      showMediaInfo: true,
       ratingsBadges: false,
       genreChips: false,
       infoPanelMode: 'on_tap',
@@ -3513,6 +3523,7 @@
       const v = body.visual;
       if (v && typeof v.progressBar === 'boolean') VISUAL.progressBar = v.progressBar;
       if (v && typeof v.showPosterTitle === 'boolean') VISUAL.showPosterTitle = v.showPosterTitle;
+      if (v && typeof v.showMediaInfo === 'boolean') VISUAL.showMediaInfo = v.showMediaInfo;
       if (v && typeof v.ratingsBadges === 'boolean') VISUAL.ratingsBadges = v.ratingsBadges;
       if (v && typeof v.genreChips === 'boolean') VISUAL.genreChips = v.genreChips;
       if (v && typeof v.infoPanelMode === 'string' && INFO_PANEL_MODES.includes(v.infoPanelMode)) VISUAL.infoPanelMode = v.infoPanelMode;
@@ -3562,6 +3573,7 @@
       // the server is briefly unreachable.
       VISUAL.progressBar = readBool('visualProgressBar', false);
       VISUAL.showPosterTitle = readBool('visualShowPosterTitle', true);
+      VISUAL.showMediaInfo = readBool('visualShowMediaInfo', true);
       VISUAL.ratingsBadges = readBool('visualRatingsBadges', false);
       VISUAL.genreChips = readBool('visualGenreChips', false);
       VISUAL.infoPanelMode = readInfoPanelMode('on_tap');
@@ -3714,6 +3726,7 @@
       document.body.classList.toggle('info-mode-on-tap', VISUAL.infoPanelMode === 'on_tap');
       document.body.classList.toggle('info-mode-on-pause', VISUAL.infoPanelMode === 'on_pause');
       document.body.classList.toggle('info-mode-always', VISUAL.infoPanelMode === 'always');
+      document.body.classList.toggle('hide-media-info', !VISUAL.showMediaInfo);
       // #65 frame style. The data attribute drives CSS, while syncFrameStyle()
       // owns the bulb DOM and chase timer so non-bulb modes do no extra work.
       document.body.dataset.frameStyle = VISUAL.frameStyle;
@@ -3840,6 +3853,7 @@
       ['landscape', 'cfgLandscape', LANDSCAPE_MODE],
       ['visualProgressBar', 'cfgVisualProgressBar', false],
       ['visualShowPosterTitle', 'cfgVisualShowPosterTitle', true],
+      ['visualShowMediaInfo', 'cfgVisualShowMediaInfo', true],
       ['visualRatingsBadges', 'cfgVisualRatingsBadges', false],
       ['visualGenreChips', 'cfgVisualGenreChips', false],
       ['visualUseBackdrops', 'cfgVisualUseBackdrops', false],
@@ -4157,6 +4171,7 @@
       'cfgVisualCornerRadiusPx',
       'cfgVisualProgressBar',
       'cfgVisualShowPosterTitle',
+      'cfgVisualShowMediaInfo',
       'cfgVisualRatingsBadges',
       'cfgVisualGenreChips',
       'cfgVisualInfoPanelMode',
@@ -4385,6 +4400,7 @@
       }
       const visBool = {
         cfgVisualProgressBar: 'progressBar', cfgVisualShowPosterTitle: 'showPosterTitle',
+        cfgVisualShowMediaInfo: 'showMediaInfo',
         cfgVisualRatingsBadges: 'ratingsBadges', cfgVisualGenreChips: 'genreChips',
         cfgVisualUseBackdrops: 'useBackdrops', cfgVisualBurnInMitigation: 'burnInMitigation',
         cfgVisualFilmGrain: 'filmGrain', cfgVisualKenBurns: 'kenBurns',
@@ -5058,6 +5074,7 @@
         visual: {
           progressBar: bool('cfgVisualProgressBar'),
           showPosterTitle: bool('cfgVisualShowPosterTitle'),
+          showMediaInfo: bool('cfgVisualShowMediaInfo'),
           ratingsBadges: bool('cfgVisualRatingsBadges'),
           genreChips: bool('cfgVisualGenreChips'),
           useBackdrops: bool('cfgVisualUseBackdrops'),
@@ -5170,6 +5187,7 @@
       cfgVisualFilmGrain: 'Adds a subtle film-grain texture over the poster for a cinematic feel.',
       cfgVisualKenBurns: 'Slow zoom-and-pan animation across the poster art.',
       cfgVisualShowPosterTitle: "Title/subtitle overlaid on the poster's bottom-left. Turn off if the info panel is pinned open and the title reads twice.",
+      cfgVisualShowMediaInfo: 'The corner badge showing media type, play/pause state, and player name. Turn off if the info panel already shows this.',
       cfgVisualProgressBar: 'Show a slim playback progress bar along the bottom of the poster.',
       cfgVisualRatingsBadges: 'Show IMDb / Rotten Tomatoes / audience badges. Requires Plex URL + token.',
       cfgVisualGenreChips: 'Show genre pills next to the content rating. Requires Plex URL + token.',

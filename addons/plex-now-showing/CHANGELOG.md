@@ -3,6 +3,15 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.14 - 2026-07-06 (fork)
+
+### Added
+
+- `visual_show_media_info` ("Status badge") toggle. Hides the corner badge
+  that shows media type, play/pause state, and player name — useful when the
+  info panel already surfaces that, so the state isn't shown twice. Default on
+  (unchanged); a new checkbox in the setup overlay's Display tab.
+
 ## 2.3.5-fix.13 - 2026-07-06 (fork)
 
 ### Fixed

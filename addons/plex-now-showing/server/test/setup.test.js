@@ -361,6 +361,17 @@ test('showPosterTitle defaults on when no overlay override is set', () => {
   assert.equal(effectiveSetupView(envBaseConfig()).visual.showPosterTitle, true);
 });
 
+test('showMediaInfo round-trips through the overlay and defaults on', () => {
+  assert.equal(effectiveSetupView(envBaseConfig()).visual.showMediaInfo, true);
+
+  const { overlay, errors } = sanitizeOverlayInput({ visual: { showMediaInfo: false } });
+  assert.equal(errors.length, 0);
+  assert.equal(overlay.visual.showMediaInfo, false);
+  const merged = applyOverlay(envBaseConfig(), overlay);
+  assert.equal(merged.visual.showMediaInfo, false);
+  assert.equal(effectiveSetupView(merged).visual.showMediaInfo, false);
+});
+
 test('visual layout round-trips through the overlay and defaults to classic', () => {
   assert.equal(effectiveSetupView(envBaseConfig()).visual.layout, 'classic');
 
