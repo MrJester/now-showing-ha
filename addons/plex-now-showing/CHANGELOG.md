@@ -3,6 +3,16 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.13 - 2026-07-06 (fork)
+
+### Fixed
+
+- Kiosk serving a stale template after an update. `now_showing.html` was sent
+  with `Cache-Control: max-age=5m`, so a kiosk reload could show the old page
+  for minutes. The HTML is now served `no-cache` (ETag revalidation — a cheap
+  304 when unchanged), so a reload always picks up the latest template; hashed
+  font/asset files keep their long cache.
+
 ## 2.3.5-fix.12 - 2026-07-05 (fork)
 
 ### Fixed

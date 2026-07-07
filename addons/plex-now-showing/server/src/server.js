@@ -117,6 +117,16 @@ export function createApp({ config, haClient, overlayStore, baseConfig }) {
     etag: true,
     maxAge: '5m',
     index: ['now_showing.html', 'index.html'],
+    setHeaders(res, filePath) {
+      // The kiosk HTML must revalidate on every load so template/JS updates
+      // land on the next reload instead of sitting in the browser cache for
+      // up to 5 minutes (kiosks reload rarely). Hashed font/asset files keep
+      // the long cache. 'no-cache' still uses ETag revalidation — a 304 when
+      // unchanged — so it's cheap, it just can't serve a stale copy blindly.
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
   }));
 
   // Expose eventBus + stateCache for the direct-run bootstrap below
