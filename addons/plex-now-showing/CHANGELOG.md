@@ -3,6 +3,20 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.15 - 2026-07-06 (fork)
+
+### Changed
+
+- Display tab reorganised into **Basic / Advanced** modes (persisted per device),
+  reordered as Layout → Colors → Poster & Metadata, then advanced sections
+  (Frame & Marquee, Info Panel Detail, Backdrops, Burn-in & Night). Basic shows
+  the essentials; a Basic/Advanced switch reveals the rest. All controls keep
+  their ids/wiring — nothing removed.
+- **Smart gating:** controls that can't apply now grey out — Plex-only features
+  (ratings/genres/backdrops) when Plex isn't configured, and frame/bulb/marquee-
+  bg/poster-framing when the layout (Cinematic) overrides them. Inline note warns
+  when the title or player would show twice (poster + info panel).
+
 ## 2.3.5-fix.14 - 2026-07-06 (fork)
 
 ### Added

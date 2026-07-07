@@ -2385,6 +2385,25 @@
     .setup-orient-btn:hover { color: var(--text-light); }
     .setup-orient-btn.active { background: var(--accent-light); color: #14110a; font-weight: 600; }
     .setup-orient-btn:focus-visible { outline: 2px solid var(--accent-light); outline-offset: -2px; }
+
+    /* Basic / Advanced detail switch (Display tab) */
+    .setup-mode-switch {
+      display: inline-flex; gap: 0; margin: 2px 0 16px;
+      border: 1px solid color-mix(in srgb, var(--accent-mid) 30%, transparent);
+      border-radius: 8px; overflow: hidden;
+    }
+    .setup-mode-btn {
+      appearance: none; cursor: pointer; font-family: 'Inter', sans-serif;
+      font-size: 0.8rem; letter-spacing: 0.06em; padding: 8px 22px;
+      background: transparent; color: var(--text-dim); border: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .setup-mode-btn + .setup-mode-btn { border-left: 1px solid color-mix(in srgb, var(--accent-mid) 30%, transparent); }
+    .setup-mode-btn:hover { color: var(--text-light); }
+    .setup-mode-btn.active { background: var(--accent-light); color: #14110a; font-weight: 600; }
+    .setup-mode-btn:focus-visible { outline: 2px solid var(--accent-light); outline-offset: -2px; }
+    /* Advanced-only fields hidden in Basic mode. */
+    #setupPanelDisplay:not(.setup-adv-mode) .adv-only { display: none; }
     /* Cinematic layout in the mini preview: art fills the stage, marquee
        becomes a corner eyebrow, oversized title bottom-left over a scrim. */
     .setup-visual-preview[data-layout="cinematic"] .setup-preview-marquee {
@@ -2760,7 +2779,6 @@
       </div>
 
       <div class="setup-tab-panel" id="setupPanelDisplay" role="tabpanel" aria-labelledby="setupTabDisplay" data-setup-panel="display">
-        <div class="setup-section-title">Theme</div>
         <div class="setup-preview-orient" role="group" aria-label="Preview orientation">
           <button type="button" class="setup-orient-btn active" data-orient="landscape" aria-pressed="true">Landscape</button>
           <button type="button" class="setup-orient-btn" data-orient="portrait" aria-pressed="false">Portrait</button>
@@ -2793,6 +2811,15 @@
           </div>
           <div class="setup-preview-caption" id="setupPreviewCaption">Classic Gold / Bulbs / Sharp corners</div>
         </div>
+
+        <!-- Basic / Advanced detail switch -->
+        <div class="setup-mode-switch" role="group" aria-label="Config detail level">
+          <button type="button" class="setup-mode-btn active" data-mode="basic" aria-pressed="true">Basic</button>
+          <button type="button" class="setup-mode-btn" data-mode="advanced" aria-pressed="false">Advanced</button>
+        </div>
+
+        <!-- ===== Layout ===== -->
+        <div class="setup-section-title">Layout</div>
         <div class="setup-field-grid">
           <div class="setup-field">
             <label for="cfgVisualLayout">Layout</label>
@@ -2802,6 +2829,9 @@
             </select>
           </div>
         </div>
+
+        <!-- ===== Colors ===== -->
+        <div class="setup-section-title">Colors</div>
         <div class="setup-field-grid">
           <div class="setup-field">
             <label for="cfgVisualTheme">Theme Preset</label>
@@ -2835,42 +2865,15 @@
             </select>
           </div>
           <div class="setup-field">
-            <label for="cfgVisualFrameStyle">Frame Style</label>
-            <select id="cfgVisualFrameStyle" autocomplete="off">
-              <option value="bulbs">Bulbs</option>
-              <option value="gold-line">Gold Line</option>
-              <option value="none">None</option>
-            </select>
-          </div>
-          <div class="setup-field">
-            <label for="cfgVisualBulbSizePx">Bulb Size</label>
-            <div class="setup-range-row">
-              <input id="cfgVisualBulbSizePx" type="range" min="12" max="48" step="1" autocomplete="off">
-              <output id="cfgVisualBulbSizePxValue" for="cfgVisualBulbSizePx">28px</output>
+            <label for="cfgVisualAccentColor">Accent Color Override</label>
+            <div class="setup-color-row">
+              <input id="cfgVisualAccentColor" type="text" maxlength="7" placeholder="#ff5500" autocomplete="off" spellcheck="false">
+              <input id="cfgVisualAccentColorPicker" type="color" value="#c8a032" aria-label="Pick accent color">
             </div>
-            <div class="hint">Changes the animated bulb frame. Only applies when Frame Style is Bulbs.</div>
-          </div>
-          <div class="setup-field">
-            <label for="cfgVisualMarqueeFont">Marquee Font</label>
-            <select id="cfgVisualMarqueeFont" autocomplete="off">
-              <option value="bebas-neue">Bebas Neue</option>
-              <option value="anton">Anton</option>
-              <option value="oswald">Oswald</option>
-              <option value="monoton">Monoton</option>
-              <option value="playfair-display">Playfair Display</option>
-            </select>
+            <div class="hint">Leave blank for the theme default. Strict #RRGGBB only.</div>
           </div>
         </div>
-        <div class="setup-field">
-          <label for="cfgVisualAccentColor">Accent Color Override</label>
-          <div class="setup-color-row">
-            <input id="cfgVisualAccentColor" type="text" maxlength="7" placeholder="#ff5500" autocomplete="off" spellcheck="false">
-            <input id="cfgVisualAccentColorPicker" type="color" value="#c8a032" aria-label="Pick accent color">
-          </div>
-          <div class="hint">Leave blank for the theme default. Strict #RRGGBB only.</div>
-        </div>
-
-        <div class="setup-field">
+        <div class="setup-field adv-only">
           <label for="cfgVisualMarqueeBgColor">Marquee Background Color</label>
           <div class="setup-color-row">
             <input id="cfgVisualMarqueeBgColor" type="text" maxlength="7" placeholder="#111111" autocomplete="off" spellcheck="false">
@@ -2887,8 +2890,7 @@
           </div>
           <div class="hint">Leave blank for the theme default. Strict #RRGGBB only.</div>
         </div>
-
-        <div class="setup-field">
+        <div class="setup-field adv-only">
           <label for="cfgVisualCornerRadiusPx">Corner Radius</label>
           <div class="setup-range-row">
             <input id="cfgVisualCornerRadiusPx" type="range" min="0" max="48" step="1" autocomplete="off">
@@ -2896,6 +2898,9 @@
           </div>
           <div class="hint">Rounds the marquee, poster, and info panel. The outer bulb frame stays square.</div>
         </div>
+
+        <!-- ===== Poster & Metadata ===== -->
+        <div class="setup-section-title">Poster &amp; Metadata</div>
         <div class="setup-field-grid">
           <div class="setup-field">
             <label for="cfgVisualPosterFraming">Poster Framing</label>
@@ -2904,52 +2909,6 @@
               <option value="cover">Cover</option>
               <option value="matted">Matted</option>
             </select>
-          </div>
-          <div class="setup-field">
-            <label class="setup-check" for="cfgVisualFilmGrain">
-              <input id="cfgVisualFilmGrain" type="checkbox">
-              Film grain overlay
-            </label>
-          </div>
-          <div class="setup-field">
-            <label class="setup-check" for="cfgVisualKenBurns">
-              <input id="cfgVisualKenBurns" type="checkbox">
-              Ken Burns poster pan
-            </label>
-          </div>
-          <div class="setup-field">
-            <label class="setup-check" for="cfgVisualShowPosterTitle">
-              <input id="cfgVisualShowPosterTitle" type="checkbox">
-              Title on poster
-            </label>
-          </div>
-          <div class="setup-field">
-            <label class="setup-check" for="cfgVisualShowMediaInfo">
-              <input id="cfgVisualShowMediaInfo" type="checkbox">
-              Status badge
-            </label>
-          </div>
-        </div>
-
-        <div class="setup-section-title">Info Panel</div>
-        <div class="setup-field-grid">
-          <div class="setup-field">
-            <label class="setup-check" for="cfgVisualProgressBar">
-              <input id="cfgVisualProgressBar" type="checkbox">
-              Progress bar
-            </label>
-          </div>
-          <div class="setup-field">
-            <label class="setup-check" for="cfgVisualRatingsBadges">
-              <input id="cfgVisualRatingsBadges" type="checkbox">
-              Ratings badges
-            </label>
-          </div>
-          <div class="setup-field">
-            <label class="setup-check" for="cfgVisualGenreChips">
-              <input id="cfgVisualGenreChips" type="checkbox">
-              Genre chips
-            </label>
           </div>
           <div class="setup-field">
             <label for="cfgVisualInfoPanelMode">Info Panel Mode</label>
@@ -2961,6 +2920,91 @@
           </div>
         </div>
         <div class="setup-field-grid">
+          <div class="setup-field">
+            <label class="setup-check" for="cfgVisualShowPosterTitle">
+              <input id="cfgVisualShowPosterTitle" type="checkbox">
+              Title on poster
+            </label>
+          </div>
+          <div class="setup-field">
+            <label class="setup-check" for="cfgVisualProgressBar">
+              <input id="cfgVisualProgressBar" type="checkbox">
+              Progress bar
+            </label>
+          </div>
+          <div class="setup-field">
+            <label class="setup-check" for="cfgVisualUseBackdrops">
+              <input id="cfgVisualUseBackdrops" type="checkbox">
+              Use backdrop art
+            </label>
+          </div>
+          <div class="setup-field adv-only">
+            <label class="setup-check" for="cfgVisualShowMediaInfo">
+              <input id="cfgVisualShowMediaInfo" type="checkbox">
+              Status badge
+            </label>
+          </div>
+          <div class="setup-field adv-only">
+            <label class="setup-check" for="cfgVisualRatingsBadges">
+              <input id="cfgVisualRatingsBadges" type="checkbox">
+              Ratings badges
+            </label>
+          </div>
+          <div class="setup-field adv-only">
+            <label class="setup-check" for="cfgVisualGenreChips">
+              <input id="cfgVisualGenreChips" type="checkbox">
+              Genre chips
+            </label>
+          </div>
+          <div class="setup-field adv-only">
+            <label class="setup-check" for="cfgVisualFilmGrain">
+              <input id="cfgVisualFilmGrain" type="checkbox">
+              Film grain overlay
+            </label>
+          </div>
+          <div class="setup-field adv-only">
+            <label class="setup-check" for="cfgVisualKenBurns">
+              <input id="cfgVisualKenBurns" type="checkbox">
+              Ken Burns poster pan
+            </label>
+          </div>
+        </div>
+
+        <div class="hint" id="setupRedundancyNote" style="display:none; margin-top:-6px;"></div>
+
+        <!-- ===== Frame & Marquee (advanced) ===== -->
+        <div class="setup-section-title adv-only">Frame &amp; Marquee</div>
+        <div class="setup-field-grid adv-only">
+          <div class="setup-field">
+            <label for="cfgVisualFrameStyle">Frame Style</label>
+            <select id="cfgVisualFrameStyle" autocomplete="off">
+              <option value="bulbs">Bulbs</option>
+              <option value="gold-line">Gold Line</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <div class="setup-field">
+            <label for="cfgVisualBulbSizePx">Bulb Size</label>
+            <div class="setup-range-row">
+              <input id="cfgVisualBulbSizePx" type="range" min="12" max="48" step="1" autocomplete="off">
+              <output id="cfgVisualBulbSizePxValue" for="cfgVisualBulbSizePx">28px</output>
+            </div>
+          </div>
+          <div class="setup-field">
+            <label for="cfgVisualMarqueeFont">Marquee Font</label>
+            <select id="cfgVisualMarqueeFont" autocomplete="off">
+              <option value="bebas-neue">Bebas Neue</option>
+              <option value="anton">Anton</option>
+              <option value="oswald">Oswald</option>
+              <option value="monoton">Monoton</option>
+              <option value="playfair-display">Playfair Display</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ===== Info Panel Detail (advanced) ===== -->
+        <div class="setup-section-title adv-only">Info Panel Detail</div>
+        <div class="setup-field-grid adv-only">
           <div class="setup-field">
             <label class="setup-check" for="cfgVisualInfoShowTitle">
               <input id="cfgVisualInfoShowTitle" type="checkbox">
@@ -2999,14 +3043,9 @@
           </div>
         </div>
 
-        <div class="setup-section-title">Backdrops</div>
-        <div class="setup-field">
-          <label class="setup-check" for="cfgVisualUseBackdrops">
-            <input id="cfgVisualUseBackdrops" type="checkbox">
-            Use backdrop art
-          </label>
-        </div>
-        <div class="setup-field-grid">
+        <!-- ===== Backdrops (advanced) ===== -->
+        <div class="setup-section-title adv-only">Backdrops</div>
+        <div class="setup-field-grid adv-only">
           <div class="setup-field">
             <label for="cfgVisualBackdropStyle">Backdrop Style</label>
             <select id="cfgVisualBackdropStyle" autocomplete="off">
@@ -3020,14 +3059,15 @@
           </div>
         </div>
 
-        <div class="setup-section-title">Burn-In</div>
-        <div class="setup-field">
+        <!-- ===== Burn-in & Night (advanced) ===== -->
+        <div class="setup-section-title adv-only">Burn-in &amp; Night</div>
+        <div class="setup-field adv-only">
           <label class="setup-check" for="cfgVisualBurnInMitigation">
             <input id="cfgVisualBurnInMitigation" type="checkbox">
             Burn-in mitigation
           </label>
         </div>
-        <div class="setup-field-grid">
+        <div class="setup-field-grid adv-only">
           <div class="setup-field">
             <label for="cfgVisualNudgeIntervalMs">Nudge Interval (ms)</label>
             <input id="cfgVisualNudgeIntervalMs" type="number" min="5000" max="600000" step="1000" inputmode="numeric" autocomplete="off">
@@ -4333,6 +4373,9 @@
       const cs2 = body.comingSoon || {};
       const plex2 = body.plex || {};
       const tmdb2 = cs2.tmdb || {};
+      // Authoritative Plex-configured signal for smart gating of Plex-only
+      // visual features (ratings/genres/backdrops).
+      setupPlexReady = !!(plex2.urlSet && plex2.tokenSet);
       // Secrets — placeholder reflects server state, value stays blank.
       const setSecretPlaceholder = (id, isSet, label) => {
         const el = document.getElementById(id);
@@ -4610,12 +4653,48 @@
       }
     }
 
+    // Controls a given layout visually overrides, so we grey them out as no-ops
+    // (e.g. Cinematic hides the frame + marquee bg and forces the poster to cover).
+    const LAYOUT_OVERRIDES = {
+      cinematic: ['cfgVisualFrameStyle', 'cfgVisualBulbSizePx', 'cfgVisualMarqueeBgColor', 'cfgVisualPosterFraming'],
+    };
+    // Whether Plex metadata is available (URL + token). Best-effort from local
+    // config; refreshed authoritatively from /api/config in hydrateSetupFromServer.
+    let setupPlexReady = !!(PLEX_URL && PLEX_TOKEN);
+
+    function updateSetupRedundancyNote() {
+      const note = document.getElementById('setupRedundancyNote');
+      if (!note) return;
+      const panelShown = (document.getElementById('cfgVisualInfoPanelMode')?.value || 'on_tap') !== 'on_tap';
+      const chk = (id) => !!document.getElementById(id)?.checked;
+      const msgs = [];
+      if (panelShown && chk('cfgVisualInfoShowTitle') && chk('cfgVisualShowPosterTitle')) {
+        msgs.push('Title shows on the poster and in the info panel — it may read twice.');
+      }
+      if (panelShown && chk('cfgVisualInfoShowPlayer') && chk('cfgVisualShowMediaInfo')) {
+        msgs.push('Player/status shows both as the corner badge and in the info panel.');
+      }
+      note.textContent = msgs.join(' ');
+      note.style.display = msgs.length ? 'block' : 'none';
+    }
+
     function syncSetupVisualFields() {
       const frameStyle = document.getElementById('cfgVisualFrameStyle')?.value || 'bulbs';
-      setSetupDependents(['cfgVisualBulbSizePx'], frameStyle === 'bulbs');
+      const layout = document.getElementById('cfgVisualLayout')?.value || 'classic';
+      const overridden = new Set(LAYOUT_OVERRIDES[layout] || []);
+
+      // Bulb size only applies to the Bulbs frame — and not when the layout hides it.
+      setSetupDependents(['cfgVisualBulbSizePx'], frameStyle === 'bulbs' && !overridden.has('cfgVisualBulbSizePx'));
+      // Grey the controls the active layout overrides.
+      setSetupDependents(['cfgVisualFrameStyle'], !overridden.has('cfgVisualFrameStyle'));
+      setSetupDependents(['cfgVisualMarqueeBgColor'], !overridden.has('cfgVisualMarqueeBgColor'));
+      setSetupDependents(['cfgVisualPosterFraming'], !overridden.has('cfgVisualPosterFraming'));
+
+      // Plex-only features do nothing without a Plex URL + token — grey them out.
+      setSetupDependents(['cfgVisualRatingsBadges', 'cfgVisualGenreChips', 'cfgVisualUseBackdrops'], setupPlexReady);
 
       const useBackdrops = !!document.getElementById('cfgVisualUseBackdrops')?.checked;
-      setSetupDependents(['cfgVisualBackdropStyle', 'cfgVisualBackdropDelayMs'], useBackdrops);
+      setSetupDependents(['cfgVisualBackdropStyle', 'cfgVisualBackdropDelayMs'], useBackdrops && setupPlexReady);
 
       const burnIn = !!document.getElementById('cfgVisualBurnInMitigation')?.checked;
       setSetupDependents([
@@ -4624,6 +4703,8 @@
         'cfgVisualNightModeEntity',
         'cfgVisualNightModeOpacity',
       ], burnIn);
+
+      updateSetupRedundancyNote();
       syncSetupVisualPreview();
     }
 
@@ -5246,6 +5327,19 @@
       }
     }
 
+    // Basic/Advanced detail level for the Display tab. Toggles a class on the
+    // panel (CSS hides `.adv-only` in Basic) and updates the button state.
+    function applySetupConfigMode(mode) {
+      const advanced = mode === 'advanced';
+      const panel = document.getElementById('setupPanelDisplay');
+      if (panel) panel.classList.toggle('setup-adv-mode', advanced);
+      document.querySelectorAll('.setup-mode-btn').forEach((b) => {
+        const on = b.dataset.mode === (advanced ? 'advanced' : 'basic');
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+    }
+
     function initSetup() {
       const form  = document.getElementById('setupForm');
       const test  = document.getElementById('setupTestBtn');
@@ -5302,6 +5396,16 @@
           requestAnimationFrame(syncSetupVisualPreview);
         });
       }
+
+      // Basic / Advanced detail switch — hides `.adv-only` fields in Basic.
+      // Persisted per-device via pns.setupConfigMode (default basic).
+      for (const btn of document.querySelectorAll('.setup-mode-btn')) {
+        btn.addEventListener('click', () => {
+          applySetupConfigMode(btn.dataset.mode);
+          try { window.localStorage.setItem('pns.setupConfigMode', btn.dataset.mode); } catch (_) {}
+        });
+      }
+      applySetupConfigMode(readConfig('setupConfigMode') === 'advanced' ? 'advanced' : 'basic');
       for (const id of ['cfgVisualUseBackdrops', 'cfgVisualBurnInMitigation']) {
         const input = document.getElementById(id);
         if (input) input.addEventListener('change', syncSetupVisualFields);
