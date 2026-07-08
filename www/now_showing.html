@@ -2362,6 +2362,43 @@
     .setup-visual-preview.burn-in-on .setup-preview-night {
       opacity: var(--preview-night-opacity, 0.18);
     }
+
+    /* ---- WS3: preview honors the remaining visual settings ---- */
+    /* Title on poster (off hides the poster title/subtitle) */
+    .setup-visual-preview.poster-title-off .setup-preview-title,
+    .setup-visual-preview.poster-title-off .setup-preview-subtitle { display: none; }
+    /* Poster framing: how the art sits in the poster area */
+    .setup-visual-preview[data-poster-framing="cover"] .setup-preview-art { left: 0; top: 0; right: 0; bottom: 0; width: auto; border-radius: 0; }
+    .setup-visual-preview[data-poster-framing="matted"] .setup-preview-art { left: 12%; right: 12%; top: 14%; bottom: 14%; width: auto; border-width: 4px; }
+    /* Film grain overlay */
+    .setup-preview-grain { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 120px; mix-blend-mode: overlay; }
+    .setup-visual-preview.grain-on .setup-preview-grain { opacity: 0.5; }
+    /* Ken Burns slow pan on the art */
+    @keyframes setupPreviewKenBurns { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.12) translate(-2%,-2%); } }
+    .setup-visual-preview.kenburns-on .setup-preview-art { animation: setupPreviewKenBurns 12s ease-in-out infinite alternate; }
+    /* Status badge (corner type/state/player) */
+    .setup-preview-mediainfo { position: absolute; right: 4%; bottom: 6%; z-index: 4; display: none;
+      flex-direction: column; align-items: flex-end; text-align: right; gap: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+    .setup-visual-preview.media-info-on .setup-preview-mediainfo { display: flex; }
+    .setup-preview-mediainfo .pmi-type { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.12em;
+      font-size: clamp(0.5rem, 2.4cqi, 0.78rem); color: var(--preview-accent-light); text-transform: uppercase; }
+    .setup-preview-mediainfo .pmi-player { font-size: clamp(0.42rem, 1.9cqi, 0.62rem); color: var(--preview-text-dim); }
+    /* Info-panel per-section visibility (mirrors the real info-hide-* body classes) */
+    .setup-preview-panel .pp-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(0.72rem, 3cqi, 1rem); margin-bottom: 2px; }
+    .setup-preview-panel .pp-subtitle { color: var(--preview-text-dim); font-size: clamp(0.55rem, 2.2cqi, 0.7rem); }
+    .setup-preview-panel .pp-tech { display: flex; gap: 4px; margin-top: 3px; }
+    .setup-preview-panel .pp-player { color: var(--preview-text-dim); font-size: clamp(0.5rem, 2cqi, 0.66rem); margin-top: 3px; }
+    .setup-visual-preview.info-hide-title .pp-title,
+    .setup-visual-preview.info-hide-subtitle .pp-subtitle,
+    .setup-visual-preview.info-hide-meta .pp-meta,
+    .setup-visual-preview.info-hide-summary .pp-summary,
+    .setup-visual-preview.info-hide-techbox .pp-tech,
+    .setup-visual-preview.info-hide-player .pp-player { display: none; }
+    /* Backdrop style: ambient blurs/darkens the whole stage behind the chrome */
+    .setup-visual-preview.backdrop-on[data-backdrop-style="ambient"] .setup-preview-backdrop { opacity: 0.62; filter: blur(6px) brightness(0.7); }
+
     .setup-preview-caption {
       margin-top: 8px;
       color: var(--text-dim);
@@ -2790,6 +2827,8 @@
             <div class="setup-preview-poster">
               <div class="setup-preview-backdrop"></div>
               <div class="setup-preview-art"></div>
+              <div class="setup-preview-grain" aria-hidden="true"></div>
+              <div class="setup-preview-mediainfo"><span class="pmi-type">Movie · Paused</span><span class="pmi-player">Plex — Living Room</span></div>
               <div class="setup-preview-copy">
                 <div class="setup-preview-title">Theatre Preview</div>
                 <div class="setup-preview-subtitle">Season 2, Episode 4 / Paused</div>
@@ -2801,9 +2840,12 @@
                   <span>Sci-Fi</span><span>Drama</span>
                 </div>
                 <div class="setup-preview-panel">
-                  <strong>Info panel</strong>
-                  <div class="setup-preview-meta"><span>TV-14</span><span>48m</span></div>
-                  <p>Use this preview to test the setup controls before saving them to the kiosk.</p>
+                  <div class="pp-row pp-title">Theatre Preview</div>
+                  <div class="pp-row pp-subtitle">Season 2, Episode 4</div>
+                  <div class="pp-row setup-preview-meta pp-meta"><span>TV-14</span><span>2024</span><span>48m</span></div>
+                  <p class="pp-row pp-summary">Use this preview to test the setup controls before saving to the kiosk.</p>
+                  <div class="pp-row pp-tech"><span>4K</span><span>HDR</span><span>Atmos</span></div>
+                  <div class="pp-row pp-player">Plex — Living Room</div>
                 </div>
               </div>
               <div class="setup-preview-night"></div>
@@ -4889,6 +4931,19 @@
       preview.classList.toggle('info-on', infoMode !== 'on_tap');
       preview.classList.toggle('backdrop-on', useBackdrops);
       preview.classList.toggle('burn-in-on', burnIn);
+
+      // Reflect the settings the mock used to ignore, so the preview is faithful.
+      const framing = document.getElementById('cfgVisualPosterFraming')?.value || 'centred';
+      preview.dataset.posterFraming = POSTER_FRAMINGS.includes(framing) ? framing : 'centred';
+      preview.dataset.backdropStyle = BACKDROP_STYLES.includes(backdropStyle) ? backdropStyle : 'fullscreen';
+      preview.classList.toggle('poster-title-off', document.getElementById('cfgVisualShowPosterTitle')?.checked === false);
+      preview.classList.toggle('media-info-on', !!document.getElementById('cfgVisualShowMediaInfo')?.checked);
+      preview.classList.toggle('grain-on', !!document.getElementById('cfgVisualFilmGrain')?.checked);
+      preview.classList.toggle('kenburns-on', !!document.getElementById('cfgVisualKenBurns')?.checked);
+      for (const s of ['Title', 'Subtitle', 'Meta', 'Summary', 'Techbox', 'Player']) {
+        const hide = document.getElementById('cfgVisualInfoShow' + s)?.checked === false;
+        preview.classList.toggle('info-hide-' + s.toLowerCase(), hide);
+      }
 
       const marquee = document.getElementById('setupPreviewMarquee');
       if (marquee) marquee.textContent = displayMode === 'coming_soon' ? comingSoonTitle.toUpperCase() : 'NOW SHOWING';

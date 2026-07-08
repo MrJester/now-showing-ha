@@ -3,6 +3,16 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.16 - 2026-07-06 (fork)
+
+### Changed
+
+- The setup-overlay live preview now reflects the settings it used to ignore:
+  poster framing (centred/cover/matted), film grain, Ken Burns pan, the status
+  badge, title-on-poster on/off, each info-panel section toggle (title/subtitle/
+  meta/summary/tech/player), and ambient vs fullscreen backdrop. The preview is
+  now a much more faithful mock of the device.
+
 ## 2.3.5-fix.15 - 2026-07-06 (fork)
 
 ### Changed
