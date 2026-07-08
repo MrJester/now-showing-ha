@@ -180,11 +180,11 @@ export function loadConfig(env = process.env) {
       // Composes with the per-axis controls below; explicit values beat
       // preset defaults.
       theme: parseEnum(env.VISUAL_THEME,
-        ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris'],
+        ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris', 'oceanic', 'crimson-noir', 'sahara', 'ultraviolet', 'rosewood', 'goldenrod'],
         'classic-gold'),
       // Layout template. Independent of the colour theme; rearranges the
       // marquee/poster/info. 'classic' is the original arrangement.
-      layout: parseEnum(env.VISUAL_LAYOUT, ['classic', 'cinematic'], 'classic'),
+      layout: parseEnum(env.VISUAL_LAYOUT, ['classic', 'cinematic', 'spotlight', 'split', 'lobby', 'ambient'], 'classic'),
       // Accent colour override (#66). Drives --accent-light/mid/dark/glow,
       // which the marquee trim, gold-line frame, ratings highlight and chip
       // borders all read from. Empty string = use the active theme's accent.

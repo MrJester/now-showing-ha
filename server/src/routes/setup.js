@@ -37,8 +37,8 @@ const INFO_PANEL_MODES = ['on_tap', 'on_pause', 'always'];
 const FRAME_STYLES = ['bulbs', 'gold-line', 'none'];
 const MARQUEE_FONTS = ['bebas-neue', 'anton', 'oswald', 'monoton', 'playfair-display'];
 const BACKDROP_STYLES = ['fullscreen', 'ambient'];
-const VISUAL_THEMES = ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris'];
-const VISUAL_LAYOUTS = ['classic', 'cinematic'];
+const VISUAL_THEMES = ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris', 'oceanic', 'crimson-noir', 'sahara', 'ultraviolet', 'rosewood', 'goldenrod'];
+const VISUAL_LAYOUTS = ['classic', 'cinematic', 'spotlight', 'split', 'lobby', 'ambient'];
 const POSTER_FRAMINGS = ['centred', 'cover', 'matted'];
 
 const HEX_RE = /^#[0-9a-f]{6}$/;

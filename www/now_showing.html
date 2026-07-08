@@ -771,6 +771,96 @@
       --red-curtain: #073642;
     }
 
+    body[data-theme="oceanic"] {
+      --accent-light: #4fd6e0;
+      --accent-mid: #2a9fb5;
+      --accent-dark: #136b7a;
+      --accent-glow: #a6f4ff;
+      --bulb-on: #b8f4ff;
+      --bulb-off: #0d3540;
+      --frame-border: #136b7a;
+      --bg-dark: #04121a;
+      --bg-marquee: #08202a;
+      --text-light: #e6fbff;
+      --text-dim: #7fb0bd;
+      --red-curtain: #0a2e3a;
+    }
+
+    body[data-theme="crimson-noir"] {
+      --accent-light: #d94a4a;
+      --accent-mid: #b02f2f;
+      --accent-dark: #6e1717;
+      --accent-glow: #ff8a8a;
+      --bulb-on: #ff9a9a;
+      --bulb-off: #2a0e0e;
+      --frame-border: #6e1717;
+      --bg-dark: #070707;
+      --bg-marquee: #0e0c0c;
+      --text-light: #f0eaea;
+      --text-dim: #8a8080;
+      --red-curtain: #3a1414;
+    }
+
+    body[data-theme="sahara"] {
+      --accent-light: #e0a860;
+      --accent-mid: #c07830;
+      --accent-dark: #7a4818;
+      --accent-glow: #ffcf8a;
+      --bulb-on: #ffdca0;
+      --bulb-off: #4a2e14;
+      --frame-border: #7a4818;
+      --bg-dark: #100a06;
+      --bg-marquee: #1a120a;
+      --text-light: #f2e4cc;
+      --text-dim: #b09070;
+      --red-curtain: #5a2e12;
+    }
+
+    body[data-theme="ultraviolet"] {
+      --accent-light: #b388ff;
+      --accent-mid: #7c3aed;
+      --accent-dark: #4a1d96;
+      --accent-glow: #d0b0ff;
+      --bulb-on: #c8a8ff;
+      --bulb-off: #20103a;
+      --frame-border: #4a1d96;
+      --bg-dark: #08040f;
+      --bg-marquee: #100a1e;
+      --text-light: #f0e8ff;
+      --text-dim: #a888d0;
+      --red-curtain: #1a0838;
+    }
+
+    body[data-theme="rosewood"] {
+      --accent-light: #d98aa0;
+      --accent-mid: #b05a72;
+      --accent-dark: #6e2a3e;
+      --accent-glow: #ffb0c4;
+      --bulb-on: #ffc0d0;
+      --bulb-off: #4a1424;
+      --frame-border: #6e2a3e;
+      --bg-dark: #120608;
+      --bg-marquee: #1c0a0e;
+      --text-light: #f8e6ec;
+      --text-dim: #b88a98;
+      --red-curtain: #5a1428;
+    }
+
+    body[data-theme="goldenrod"] {
+      --accent-light: #ffd24a;
+      --accent-mid: #e0a820;
+      --accent-dark: #8a6410;
+      --accent-glow: #ffe88a;
+      --bulb-on: #ffe89c;
+      --bulb-off: #5a4410;
+      --frame-border: #8a6410;
+      --bg-dark: #0e0c05;
+      --bg-marquee: #181206;
+      --text-light: #f5ecc8;
+      --text-dim: #b0a060;
+      --red-curtain: #4a3410;
+    }
+
 
     /* Marquee font picker (#62/#63). The default matches v1 exactly; the
      * alternate fonts only touch the NOW SHOWING banner and preserve the rest
@@ -1510,6 +1600,96 @@
       margin-top: 6px;
     }
     body[data-layout="cinematic"] .media-info { z-index: 5; }
+
+    /* ===== Poster Spotlight — poster as a centred card on a dark ground ===== */
+    body[data-layout="spotlight"] .bulbs-outer,
+    body[data-layout="spotlight"] .poster-bg-blur { display: none; }
+    body[data-layout="spotlight"] .poster-section {
+      border: none; border-radius: 0;
+      background: radial-gradient(62% 70% at 50% 42%, #17171e, #050506);
+    }
+    body[data-layout="spotlight"] .marquee {
+      position: absolute; top: 3%; left: 5%; width: auto; height: auto;
+      border: none; border-radius: 0; overflow: visible; z-index: 4;
+    }
+    body[data-layout="spotlight"] .marquee-bg { display: none; }
+    body[data-layout="spotlight"] .marquee-text h1 {
+      font-size: clamp(0.72rem, 2.2vw, 1.15rem); letter-spacing: 0.34em;
+      color: var(--accent-light); opacity: 0.9;
+      text-shadow: 0 0 10px color-mix(in srgb, var(--accent-glow) 55%, transparent);
+    }
+    body[data-layout="spotlight"] .poster-area,
+    body[data-layout="spotlight"] .poster-area-next {
+      left: 50%; top: 44%; right: auto; bottom: auto;
+      transform: translate(-50%, -50%);
+      width: min(64%, 60vh); height: 80%;
+      background-size: cover !important; background-position: center !important;
+      border-radius: 8px;
+      box-shadow: 0 26px 64px rgba(0,0,0,0.7), 0 0 46px color-mix(in srgb, var(--accent-glow) 18%, transparent);
+    }
+    body[data-layout="spotlight"] .poster-overlay { display: none !important; }
+    body[data-layout="spotlight"] .poster-title {
+      left: 0; right: 0; bottom: 5%; text-align: center; padding: 0 8%; z-index: 3;
+    }
+    body[data-layout="spotlight"] .media-info { z-index: 5; }
+
+    /* ===== Split Editorial — poster left, title/details right ===== */
+    body[data-layout="split"] .bulbs-outer,
+    body[data-layout="split"] .poster-bg-blur { display: none; }
+    body[data-layout="split"] .poster-section { border: none; border-radius: 0; background: linear-gradient(180deg, #111319, #070810); }
+    body[data-layout="split"] .marquee {
+      position: absolute; top: 3%; left: 5%; width: auto; height: auto; border: none; z-index: 4;
+    }
+    body[data-layout="split"] .marquee-bg { display: none; }
+    body[data-layout="split"] .marquee-text h1 {
+      font-size: clamp(0.68rem, 2vw, 1.05rem); letter-spacing: 0.32em; color: var(--accent-light); opacity: 0.9;
+    }
+    body[data-layout="split"] .poster-area,
+    body[data-layout="split"] .poster-area-next {
+      right: 46%; background-size: cover !important; background-position: center !important;
+    }
+    body[data-layout="split"] .poster-overlay { display: none !important; }
+    body[data-layout="split"] .poster-title {
+      left: 58%; right: 5%; top: 50%; bottom: auto; transform: translateY(-50%);
+      z-index: 3; border-left: 2px solid color-mix(in srgb, var(--accent-mid) 45%, transparent); padding-left: 4%;
+    }
+    body[data-layout="split"] .poster-title h2 { font-size: clamp(1.4rem, 4.5vw, 3.2rem); }
+
+    /* ===== Lobby Card — matted double-frame around the poster ===== */
+    body[data-layout="lobby"] .bulbs-outer { display: none; }
+    body[data-layout="lobby"] .frame-wrapper { padding: 2.6vmin; background: repeating-linear-gradient(45deg, #0c0c0e, #0c0c0e 12px, #0a0a0c 12px, #0a0a0c 24px); }
+    body[data-layout="lobby"] .poster-section {
+      border: 2px solid color-mix(in srgb, var(--accent-light) 70%, transparent);
+      box-shadow: inset 0 0 0 4px #000, inset 0 0 0 5px color-mix(in srgb, var(--accent-dark) 55%, transparent), 0 18px 44px rgba(0,0,0,0.6);
+    }
+    body[data-layout="lobby"] .poster-section::before,
+    body[data-layout="lobby"] .poster-section::after {
+      content: ""; position: absolute; width: 18px; height: 18px; z-index: 6; border: 2px solid var(--accent-light); pointer-events: none;
+    }
+    body[data-layout="lobby"] .poster-section::before { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }
+    body[data-layout="lobby"] .poster-section::after { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
+
+    /* ===== Now-Playing Bar — darkened full art + slim bottom bar ===== */
+    body[data-layout="ambient"] .bulbs-outer,
+    body[data-layout="ambient"] .marquee,
+    body[data-layout="ambient"] .poster-bg-blur { display: none; }
+    body[data-layout="ambient"] .poster-section { border: none; border-radius: 0; }
+    body[data-layout="ambient"] .poster-area,
+    body[data-layout="ambient"] .poster-area-next {
+      background-size: cover !important; background-position: center !important; filter: brightness(0.52) saturate(1.08);
+    }
+    body[data-layout="ambient"] .poster-overlay { display: none !important; }
+    body[data-layout="ambient"] .poster-title {
+      left: 0; right: 0; bottom: 0; padding: 2.4vmin 4vmin; z-index: 3;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.4) 60%, transparent);
+    }
+    body[data-layout="ambient"] .poster-title h2 { font-size: clamp(1.1rem, 3.2vw, 2.2rem); }
+    body[data-layout="ambient"] .media-info { z-index: 5; }
+
+    /* Title is the hero in these layouts — always shown regardless of the toggle. */
+    body[data-layout="spotlight"] .poster-title,
+    body[data-layout="split"] .poster-title,
+    body[data-layout="ambient"] .poster-title { display: block !important; }
 
     /* ===== MEDIA INFO (bottom-right) ===== */
     .media-info {
@@ -2470,6 +2650,35 @@
       font-size: clamp(1rem, 7cqi, 2.4rem);
     }
 
+    /* Poster Spotlight preview */
+    .setup-visual-preview[data-layout="spotlight"] .setup-preview-marquee {
+      position: absolute; top: 6%; left: 6%; height: auto; width: auto; border: none; background: none; padding: 0; z-index: 4;
+    }
+    .setup-visual-preview[data-layout="spotlight"] .setup-preview-marquee span { font-size: clamp(0.48rem, 2.4cqi, 0.8rem); color: var(--preview-accent-light); }
+    .setup-visual-preview[data-layout="spotlight"] .setup-preview-poster { height: 100%; background: radial-gradient(60% 70% at 50% 42%, #17171e, #050506); }
+    .setup-visual-preview[data-layout="spotlight"] .setup-preview-art {
+      left: 50%; top: 42%; right: auto; bottom: auto; transform: translate(-50%,-50%); width: 40%; height: 74%; border-radius: 4px;
+    }
+    .setup-visual-preview[data-layout="spotlight"] .setup-preview-copy { left: 6%; right: 6%; top: auto; bottom: 5%; text-align: center; align-items: center; z-index: 3; }
+
+    /* Split Editorial preview */
+    .setup-visual-preview[data-layout="split"] .setup-preview-marquee {
+      position: absolute; top: 6%; left: 6%; height: auto; width: auto; border: none; background: none; padding: 0; z-index: 4;
+    }
+    .setup-visual-preview[data-layout="split"] .setup-preview-marquee span { font-size: clamp(0.46rem, 2.2cqi, 0.75rem); color: var(--preview-accent-light); }
+    .setup-visual-preview[data-layout="split"] .setup-preview-poster { height: 100%; }
+    .setup-visual-preview[data-layout="split"] .setup-preview-art { left: 0; top: 0; right: 54%; bottom: 0; width: auto; border-radius: 0; }
+    .setup-visual-preview[data-layout="split"] .setup-preview-copy { left: 50%; right: 5%; top: 50%; bottom: auto; transform: translateY(-50%); border-left: 2px solid color-mix(in srgb, var(--preview-accent-mid) 45%, transparent); padding-left: 4%; z-index: 3; }
+
+    /* Lobby Card preview */
+    .setup-visual-preview[data-layout="lobby"] .setup-preview-stage { border-width: 2px; box-shadow: inset 0 0 0 3px #000, inset 0 0 0 4px color-mix(in srgb, var(--preview-accent-dark) 55%, transparent); }
+
+    /* Now-Playing Bar preview */
+    .setup-visual-preview[data-layout="ambient"] .setup-preview-marquee { display: none; }
+    .setup-visual-preview[data-layout="ambient"] .setup-preview-poster { height: 100%; }
+    .setup-visual-preview[data-layout="ambient"] .setup-preview-art { left: 0; top: 0; right: 0; bottom: 0; width: auto; border-radius: 0; filter: brightness(0.55); }
+    .setup-visual-preview[data-layout="ambient"] .setup-preview-copy { left: 0; right: 0; top: auto; bottom: 0; padding: 6% 6% 5%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); z-index: 3; }
+
     /* Portrait: shrink the whole preview card (so the bulb frame still hugs the
        stage) and stand the stage up 9:16. */
     .setup-visual-preview[data-orientation="portrait"] {
@@ -2868,6 +3077,10 @@
             <select id="cfgVisualLayout" autocomplete="off">
               <option value="classic">Classic Marquee</option>
               <option value="cinematic">Full-Bleed Cinematic</option>
+              <option value="spotlight">Poster Spotlight</option>
+              <option value="split">Split Editorial</option>
+              <option value="lobby">Lobby Card</option>
+              <option value="ambient">Now-Playing Bar</option>
             </select>
           </div>
         </div>
@@ -2903,6 +3116,14 @@
               <option value="molten">Molten</option>
               <option value="frostbite">Frostbite</option>
               <option value="solaris">Solaris</option>
+              </optgroup>
+              <optgroup label="Expanded">
+              <option value="oceanic">Oceanic</option>
+              <option value="crimson-noir">Crimson Noir</option>
+              <option value="sahara">Sahara</option>
+              <option value="ultraviolet">Ultraviolet</option>
+              <option value="rosewood">Rosewood</option>
+              <option value="goldenrod">Goldenrod</option>
               </optgroup>
             </select>
           </div>
@@ -3462,8 +3683,8 @@
     // #23 — theme presets. Must mirror the enum in server/src/config.js.
     // Adding one here without updating the server will leak through (the
     // setup page reads localStorage), but the add-on schema will reject it.
-    const VISUAL_LAYOUTS = ['classic', 'cinematic'];
-    const VISUAL_THEMES = ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris'];
+    const VISUAL_LAYOUTS = ['classic', 'cinematic', 'spotlight', 'split', 'lobby', 'ambient'];
+    const VISUAL_THEMES = ['classic-gold', 'art-deco-silver', 'neon-80s', 'minimalist-dark', 'film-noir', 'velvet-crimson', 'technicolor', 'drive-in-dusk', 'emerald-deco', 'midnight-imax', 'rose-gold', 'grindhouse', 'phosphor-terminal', 'vaporwave', 'miami-deco', 'golden-silent', 'cosmic', 'molten', 'frostbite', 'solaris', 'oceanic', 'crimson-noir', 'sahara', 'ultraviolet', 'rosewood', 'goldenrod'];
     // VISUAL holds the resolved values for every visual toggle. Defaults
     // mirror the server-side defaults so a hard-refresh before /api/config
     // resolves still renders sanely.
@@ -4232,6 +4453,78 @@
         textDim: '#93a1a1',
         redCurtain: '#073642',
       },
+      'oceanic': {
+        label: 'Oceanic',
+        accentLight: '#4fd6e0',
+        accentMid: '#2a9fb5',
+        accentDark: '#136b7a',
+        accentGlow: '#a6f4ff',
+        bgDark: '#04121a',
+        bgMarquee: '#08202a',
+        textLight: '#e6fbff',
+        textDim: '#7fb0bd',
+        redCurtain: '#0a2e3a',
+      },
+      'crimson-noir': {
+        label: 'Crimson Noir',
+        accentLight: '#d94a4a',
+        accentMid: '#b02f2f',
+        accentDark: '#6e1717',
+        accentGlow: '#ff8a8a',
+        bgDark: '#070707',
+        bgMarquee: '#0e0c0c',
+        textLight: '#f0eaea',
+        textDim: '#8a8080',
+        redCurtain: '#3a1414',
+      },
+      'sahara': {
+        label: 'Sahara',
+        accentLight: '#e0a860',
+        accentMid: '#c07830',
+        accentDark: '#7a4818',
+        accentGlow: '#ffcf8a',
+        bgDark: '#100a06',
+        bgMarquee: '#1a120a',
+        textLight: '#f2e4cc',
+        textDim: '#b09070',
+        redCurtain: '#5a2e12',
+      },
+      'ultraviolet': {
+        label: 'Ultraviolet',
+        accentLight: '#b388ff',
+        accentMid: '#7c3aed',
+        accentDark: '#4a1d96',
+        accentGlow: '#d0b0ff',
+        bgDark: '#08040f',
+        bgMarquee: '#100a1e',
+        textLight: '#f0e8ff',
+        textDim: '#a888d0',
+        redCurtain: '#1a0838',
+      },
+      'rosewood': {
+        label: 'Rosewood',
+        accentLight: '#d98aa0',
+        accentMid: '#b05a72',
+        accentDark: '#6e2a3e',
+        accentGlow: '#ffb0c4',
+        bgDark: '#120608',
+        bgMarquee: '#1c0a0e',
+        textLight: '#f8e6ec',
+        textDim: '#b88a98',
+        redCurtain: '#5a1428',
+      },
+      'goldenrod': {
+        label: 'Goldenrod',
+        accentLight: '#ffd24a',
+        accentMid: '#e0a820',
+        accentDark: '#8a6410',
+        accentGlow: '#ffe88a',
+        bgDark: '#0e0c05',
+        bgMarquee: '#181206',
+        textLight: '#f5ecc8',
+        textDim: '#b0a060',
+        redCurtain: '#4a3410',
+      },
     };
     const SETUP_FONT_PREVIEW = {
       'bebas-neue': { family: "'Bebas Neue', sans-serif", weight: '400', spacing: '0.35em', label: 'Bebas Neue' },
@@ -4699,6 +4992,10 @@
     // (e.g. Cinematic hides the frame + marquee bg and forces the poster to cover).
     const LAYOUT_OVERRIDES = {
       cinematic: ['cfgVisualFrameStyle', 'cfgVisualBulbSizePx', 'cfgVisualMarqueeBgColor', 'cfgVisualPosterFraming'],
+      spotlight: ['cfgVisualFrameStyle', 'cfgVisualBulbSizePx', 'cfgVisualMarqueeBgColor', 'cfgVisualPosterFraming'],
+      split: ['cfgVisualFrameStyle', 'cfgVisualBulbSizePx', 'cfgVisualMarqueeBgColor', 'cfgVisualPosterFraming'],
+      lobby: ['cfgVisualFrameStyle', 'cfgVisualBulbSizePx'],
+      ambient: ['cfgVisualFrameStyle', 'cfgVisualBulbSizePx', 'cfgVisualMarqueeBgColor', 'cfgVisualPosterFraming'],
     };
     // Whether Plex metadata is available (URL + token). Best-effort from local
     // config; refreshed authoritatively from /api/config in hydrateSetupFromServer.

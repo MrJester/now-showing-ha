@@ -3,6 +3,20 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.17 - 2026-07-06 (fork)
+
+### Added
+
+- Four new layout templates (Layout dropdown): **Poster Spotlight** (centred
+  poster hero), **Split Editorial** (poster left, title/details right),
+  **Lobby Card** (matted double-frame), and **Now-Playing Bar** (darkened art
+  + slim bottom bar) — on top of Classic and Cinematic. Each has a matching
+  preview variant, and the smart-gating map greys the controls each layout
+  overrides. Default stays Classic.
+- Six more theme presets (new "Expanded" group): Oceanic, Crimson Noir,
+  Sahara, Ultraviolet, Rosewood, Goldenrod — 26 total. Default stays Classic
+  Gold; unknown values fall back.
+
 ## 2.3.5-fix.16 - 2026-07-06 (fork)
 
 ### Changed
