@@ -3319,9 +3319,10 @@
           <div class="setup-field">
             <label for="cfgVisualBackdropStyle">Backdrop Style</label>
             <select id="cfgVisualBackdropStyle" autocomplete="off">
-              <option value="fullscreen">Fullscreen</option>
-              <option value="ambient">Ambient</option>
+              <option value="fullscreen">Fullscreen (on pause)</option>
+              <option value="ambient">Ambient (while playing)</option>
             </select>
+            <div class="hint">Fullscreen shows the fanart only when paused. Ambient shows a blurred fanart behind everything the whole time.</div>
           </div>
           <div class="setup-field">
             <label for="cfgVisualBackdropDelayMs">Backdrop Delay (ms)</label>
@@ -5642,9 +5643,9 @@
       cfgVisualInfoShowSummary: 'Show the plot summary inside the info panel.',
       cfgVisualInfoShowTechbox: 'Show the tech box (resolution, codec, audio) inside the info panel.',
       cfgVisualInfoShowPlayer: 'Show the player/device name inside the info panel.',
-      cfgVisualUseBackdrops: 'Use movie/show fanart as a backdrop. Requires Plex URL + token.',
-      cfgVisualBackdropStyle: 'Fullscreen fanart on pause, or an ambient blurred backdrop while playing.',
-      cfgVisualBackdropDelayMs: 'How long the player must stay paused before the fullscreen backdrop fades in.',
+      cfgVisualUseBackdrops: "Use the movie/show fanart as a backdrop. Note: the Fullscreen style only appears when playback is PAUSED (after the delay below); the Ambient style shows a blurred backdrop the whole time. Requires Plex URL + token.",
+      cfgVisualBackdropStyle: "Fullscreen = fanart fades in only while paused (landscape). Ambient = a blurred, dimmed fanart sits behind everything the entire time you're watching.",
+      cfgVisualBackdropDelayMs: 'Only for the Fullscreen (on pause) style: how long playback must stay paused before the backdrop fades in.',
       cfgVisualBurnInMitigation: 'OLED protection: drift pixels slightly over time and optionally dim overnight.',
       cfgVisualNudgeIntervalMs: 'How often the screen shifts by a few pixels for burn-in protection.',
       cfgVisualNudgeAmplitudePx: 'Maximum pixel shift for burn-in protection (1–16px).',

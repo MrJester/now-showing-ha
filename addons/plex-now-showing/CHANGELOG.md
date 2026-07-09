@@ -3,6 +3,15 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.19 - 2026-07-08 (fork)
+
+### Changed
+
+- Clarified backdrop copy: Backdrop Style options now read "Fullscreen (on
+  pause)" and "Ambient (while playing)", with a hint and updated tooltips
+  making explicit that the Fullscreen backdrop only appears when paused, while
+  Ambient shows a blurred backdrop the whole time.
+
 ## 2.3.5-fix.18 - 2026-07-08 (fork)
 
 ### Added
