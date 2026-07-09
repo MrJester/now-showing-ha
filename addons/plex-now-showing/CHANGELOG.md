@@ -3,6 +3,18 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.21 - 2026-07-09 (fork)
+
+### Fixed
+
+- **Preview poster is no longer black.** The demo poster is a data-URI SVG;
+  `showMedia` was prepending `HA_URL` to `data:` URIs (only `http`/`/api/artwork`
+  were passed through), and the SVG's `url(#gradient)` left literal parens that
+  broke the CSS `background-image: url(...)`. Now `data:` URIs pass through
+  untouched and the demo poster is base64-encoded so it's `url()`-safe.
+- **Preview Rotten Tomatoes score.** The RT badge renders `value × 10`%, so the
+  demo's `88` showed as `880%`; corrected the demo value to `8.8` → `88%`.
+
 ## 2.3.5-fix.20 - 2026-07-09 (fork)
 
 ### Changed

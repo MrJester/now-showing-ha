@@ -6930,7 +6930,7 @@
     function showMedia(data) {
       // `/api/artwork` paths are add-on proxy routes — must use the
       // page origin, not HA_URL (which points to Home Assistant).
-      const artworkUrl = data.artwork.startsWith('http')
+      const artworkUrl = data.artwork.startsWith('http') || data.artwork.startsWith('data:')
         ? data.artwork
         : data.artwork.startsWith('/api/artwork')
           ? window.location.origin + data.artwork
@@ -7217,7 +7217,10 @@
     // render, never a separate mock. No live HA fetch / SSE / polling.
     const PREVIEW_MODE = new URLSearchParams(location.search).get('preview') === '1';
 
-    const DEMO_POSTER = 'data:image/svg+xml,' + encodeURIComponent(
+    // Base64-encoded so the data URI is safe inside CSS `url(...)` — an
+    // encodeURIComponent form would leave literal "(" / ")" from the gradient
+    // reference, which breaks background-image parsing (black poster).
+    const DEMO_POSTER = 'data:image/svg+xml;base64,' + btoa(
       '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600">' +
       '<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1">' +
       '<stop offset="0" stop-color="#2a1c3a"/><stop offset="0.55" stop-color="#12233a"/><stop offset="1" stop-color="#05070c"/></linearGradient></defs>' +
@@ -7248,7 +7251,7 @@
       bitrate: 48000, container: 'MKV', width: 3840, height: 2160,
       ratings: {
         imdb: { value: 8.0, scale: 10, source: 'imdb' },
-        rottenTomatoes: { value: 88, scale: 100, source: 'rt' },
+        rottenTomatoes: { value: 8.8, scale: 10, source: 'rt', fresh: true },
         audience: { value: 8.3, scale: 10, source: 'tmdb' },
       },
       genres: ['Sci-Fi', 'Thriller', 'Drama'],
