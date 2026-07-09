@@ -2328,7 +2328,11 @@
       transition: border-color 0.18s ease, background 0.18s ease;
     }
     /* Live iframe preview (?preview=1). The framewrap fixes the aspect ratio so
-       the real kiosk render is letterboxed to match the target device shape. */
+       the real kiosk render is letterboxed to match the target device shape.
+       The iframe itself renders at a fixed device resolution (1280x720 land /
+       720x1280 portrait) and is uniformly scaled down via transform:scale so
+       proportions match the real screen exactly instead of reflowing at a tiny
+       viewport. --preview-scale is set in JS from the framewrap's width. */
     .setup-preview-framewrap {
       position: relative;
       width: 100%;
@@ -2344,11 +2348,19 @@
       margin: 0 auto;
     }
     .setup-preview-frame {
-      display: block;
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1280px;
+      height: 720px;
       border: 0;
       background: #000;
+      transform-origin: top left;
+      transform: scale(var(--preview-scale, 0.3));
+    }
+    .setup-visual-preview[data-orientation="portrait"] .setup-preview-frame {
+      width: 720px;
+      height: 1280px;
     }
     .setup-visual-preview[data-frame-style="gold-line"] {
       border: 2px solid color-mix(in srgb, var(--preview-accent-light) 78%, transparent);
@@ -5175,6 +5187,18 @@
     // the actual render code so the preview always matches the device.
     let previewFrameReady = false;
 
+    // The iframe renders at a fixed device resolution and is scaled to fit its
+    // wrapper (see .setup-preview-frame). Recompute the scale from the wrapper's
+    // current width whenever it changes (tab shown, orientation flip, resize).
+    function updatePreviewScale() {
+      const preview = document.getElementById('setupVisualPreview');
+      const wrap = preview?.querySelector('.setup-preview-framewrap');
+      if (!preview || !wrap) return;
+      const designW = preview.dataset.orientation === 'portrait' ? 720 : 1280;
+      const w = wrap.clientWidth;
+      if (w > 0) preview.style.setProperty('--preview-scale', (w / designW).toFixed(4));
+    }
+
     function syncSetupVisualPreview() {
       const frame = document.getElementById('setupPreviewFrame');
       const themeKey = document.getElementById('cfgVisualTheme')?.value || 'classic-gold';
@@ -5186,6 +5210,8 @@
       // The preview orientation toggle (not the saved cfgLandscape field) drives
       // how the iframe renders, so the frame shape and the render always agree.
       const orientation = document.getElementById('setupVisualPreview')?.dataset.orientation || 'landscape';
+
+      updatePreviewScale();
 
       if (frame && frame.contentWindow && previewFrameReady) {
         try {
@@ -5715,6 +5741,15 @@
           syncSetupVisualPreview();
         }
       });
+
+      // Keep the iframe's scale in sync with its wrapper size — fires when the
+      // Display tab becomes visible (0→width), on window resize, and on the
+      // orientation flip (which changes the wrapper's max-width).
+      const previewWrap = document.querySelector('.setup-preview-framewrap');
+      if (previewWrap && window.ResizeObserver) {
+        new ResizeObserver(updatePreviewScale).observe(previewWrap);
+      }
+      window.addEventListener('resize', updatePreviewScale);
 
       for (const id of ['cfgVisualUseBackdrops', 'cfgVisualBurnInMitigation']) {
         const input = document.getElementById(id);

@@ -3,6 +3,18 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.22 - 2026-07-09 (fork)
+
+### Fixed
+
+- **Preview now scales correctly in the Display panel.** The iframe was
+  rendering the kiosk at the panel's (small) width, so text/bulbs reflowed
+  huge and clipped. It now renders at a fixed device resolution (1280×720
+  landscape / 720×1280 portrait) and is uniformly scaled down with
+  `transform: scale()` to fit its box, so the preview is a faithful miniature
+  of the real screen. The scale is recomputed from the wrapper width via a
+  ResizeObserver (tab shown, window resize) and on the Landscape/Portrait flip.
+
 ## 2.3.5-fix.21 - 2026-07-09 (fork)
 
 ### Fixed
