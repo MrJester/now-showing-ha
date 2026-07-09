@@ -2327,6 +2327,29 @@
       overflow: hidden;
       transition: border-color 0.18s ease, background 0.18s ease;
     }
+    /* Live iframe preview (?preview=1). The framewrap fixes the aspect ratio so
+       the real kiosk render is letterboxed to match the target device shape. */
+    .setup-preview-framewrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+    .setup-visual-preview[data-orientation="portrait"] .setup-preview-framewrap {
+      aspect-ratio: 9 / 16;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+    .setup-preview-frame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #000;
+    }
     .setup-visual-preview[data-frame-style="gold-line"] {
       border: 2px solid color-mix(in srgb, var(--preview-accent-light) 78%, transparent);
       box-shadow:
@@ -3036,38 +3059,11 @@
           <button type="button" class="setup-orient-btn active" data-orient="landscape" aria-pressed="true">Landscape</button>
           <button type="button" class="setup-orient-btn" data-orient="portrait" aria-pressed="false">Portrait</button>
         </div>
-        <div class="setup-visual-preview" id="setupVisualPreview" data-frame-style="bulbs" data-orientation="landscape" aria-live="polite">
-          <div class="setup-preview-bulbs" aria-hidden="true"></div>
-          <div class="setup-preview-stage">
-            <div class="setup-preview-marquee"><span id="setupPreviewMarquee">NOW SHOWING</span></div>
-            <div class="setup-preview-poster">
-              <div class="setup-preview-backdrop"></div>
-              <div class="setup-preview-art"></div>
-              <div class="setup-preview-grain" aria-hidden="true"></div>
-              <div class="setup-preview-mediainfo"><span class="pmi-type">Movie · Paused</span><span class="pmi-player">Plex — Living Room</span></div>
-              <div class="setup-preview-copy">
-                <div class="setup-preview-title">Theatre Preview</div>
-                <div class="setup-preview-subtitle">Season 2, Episode 4 / Paused</div>
-                <div class="setup-preview-progress"><span></span></div>
-                <div class="setup-preview-ratings">
-                  <span>IMDb 8.7</span><span>RT 94%</span>
-                </div>
-                <div class="setup-preview-genres">
-                  <span>Sci-Fi</span><span>Drama</span>
-                </div>
-                <div class="setup-preview-panel">
-                  <div class="pp-row pp-title">Theatre Preview</div>
-                  <div class="pp-row pp-subtitle">Season 2, Episode 4</div>
-                  <div class="pp-row setup-preview-meta pp-meta"><span>TV-14</span><span>2024</span><span>48m</span></div>
-                  <p class="pp-row pp-summary">Use this preview to test the setup controls before saving to the kiosk.</p>
-                  <div class="pp-row pp-tech"><span>4K</span><span>HDR</span><span>Atmos</span></div>
-                  <div class="pp-row pp-player">Plex — Living Room</div>
-                </div>
-              </div>
-              <div class="setup-preview-night"></div>
-            </div>
+        <div class="setup-visual-preview" id="setupVisualPreview" data-orientation="landscape" aria-live="polite">
+          <div class="setup-preview-framewrap">
+            <iframe id="setupPreviewFrame" class="setup-preview-frame" title="Live kiosk preview" src="now_showing.html?preview=1"></iframe>
           </div>
-          <div class="setup-preview-caption" id="setupPreviewCaption">Classic Gold / Bulbs / Sharp corners</div>
+          <div class="setup-preview-caption" id="setupPreviewCaption">Classic Gold / Classic layout</div>
         </div>
 
         <!-- Basic / Advanced detail switch -->
@@ -5174,101 +5170,41 @@
       });
     }
 
-    function syncSetupVisualPreview() {
-      const preview = document.getElementById('setupVisualPreview');
-      if (!preview) return;
+    // The preview is a real kiosk render inside an iframe (?preview=1). We push
+    // the current form settings to it via postMessage; it applies them through
+    // the actual render code so the preview always matches the device.
+    let previewFrameReady = false;
 
+    function syncSetupVisualPreview() {
+      const frame = document.getElementById('setupPreviewFrame');
       const themeKey = document.getElementById('cfgVisualTheme')?.value || 'classic-gold';
-      const theme = SETUP_THEME_PREVIEW[themeKey] || SETUP_THEME_PREVIEW['classic-gold'];
       const accentRaw = (document.getElementById('cfgVisualAccentColor')?.value || '').trim().toLowerCase();
       const accent = HEX_RE.test(accentRaw) ? accentRaw : '';
       const marqueeBgRaw = (document.getElementById('cfgVisualMarqueeBgColor')?.value || '').trim().toLowerCase();
       const marqueeBg = HEX_RE.test(marqueeBgRaw) ? marqueeBgRaw : '';
-      const radius = Math.max(0, Math.min(48, parseInt(document.getElementById('cfgVisualCornerRadiusPx')?.value || '0', 10) || 0));
-      const bulbSize = Math.max(12, Math.min(48, parseInt(document.getElementById('cfgVisualBulbSizePx')?.value || '28', 10) || 28));
-      const fontKey = document.getElementById('cfgVisualMarqueeFont')?.value || 'bebas-neue';
-      const font = SETUP_FONT_PREVIEW[fontKey] || SETUP_FONT_PREVIEW['bebas-neue'];
-      const frameStyle = document.getElementById('cfgVisualFrameStyle')?.value || 'bulbs';
-      const infoMode = document.getElementById('cfgVisualInfoPanelMode')?.value || 'on_tap';
-      const useBackdrops = !!document.getElementById('cfgVisualUseBackdrops')?.checked;
-      const backdropStyle = document.getElementById('cfgVisualBackdropStyle')?.value || 'fullscreen';
-      const burnIn = !!document.getElementById('cfgVisualBurnInMitigation')?.checked;
-      const nudgeAmplitude = Math.max(1, Math.min(16, parseInt(document.getElementById('cfgVisualNudgeAmplitudePx')?.value || '4', 10) || 4));
-      const nightOpacity = Math.max(0, Math.min(0.95, parseFloat(document.getElementById('cfgVisualNightModeOpacity')?.value || '0.4') || 0.4));
-      const displayMode = readDisplayMode(document.getElementById('cfgDisplayMode')?.value || DISPLAY_MODE);
-      const comingSoonTitle = document.getElementById('cfgComingSoonTitle')?.value.trim() || 'COMING SOON';
-
-      const palette = {
-        ...theme,
-        accentLight: accent || theme.accentLight,
-        accentMid: accent ? mixHex(accent, '#000000', 0.2) : theme.accentMid,
-        accentDark: accent ? mixHex(accent, '#000000', 0.5) : theme.accentDark,
-        accentGlow: accent ? mixHex(accent, '#ffffff', 0.3) : theme.accentGlow,
-        bgMarquee: marqueeBg || theme.bgMarquee,
-        redCurtain: marqueeBg || theme.redCurtain,
-      };
-      const vars = {
-        '--preview-accent-light': palette.accentLight,
-        '--preview-accent-mid': palette.accentMid,
-        '--preview-accent-dark': palette.accentDark,
-        '--preview-accent-glow': palette.accentGlow,
-        '--preview-bg-dark': palette.bgDark,
-        '--preview-bg-marquee': palette.bgMarquee,
-        '--preview-text-light': palette.textLight,
-        '--preview-text-dim': palette.textDim,
-        '--preview-red-curtain': palette.redCurtain,
-        '--preview-radius': `${radius}px`,
-        '--preview-bulb-size': `${Math.max(5, Math.round(bulbSize * 0.32))}px`,
-        '--preview-marquee-font': font.family,
-        '--preview-marquee-weight': font.weight,
-        '--preview-marquee-spacing': font.spacing,
-        '--preview-night-opacity': String(Math.max(0.08, nightOpacity * 0.45)),
-        '--preview-nudge-x': `${Math.min(10, nudgeAmplitude)}px`,
-        '--preview-nudge-y': `${-Math.min(6, Math.max(2, Math.round(nudgeAmplitude / 2)))}px`,
-      };
-      for (const [key, value] of Object.entries(vars)) preview.style.setProperty(key, value);
-
-      preview.dataset.frameStyle = FRAME_STYLES.includes(frameStyle) ? frameStyle : 'bulbs';
       const layout = document.getElementById('cfgVisualLayout')?.value || 'classic';
-      preview.dataset.layout = VISUAL_LAYOUTS.includes(layout) ? layout : 'classic';
-      renderSetupPreviewBulbs(preview, bulbSize);
-      preview.classList.toggle('progress-on', !!document.getElementById('cfgVisualProgressBar')?.checked);
-      preview.classList.toggle('ratings-on', !!document.getElementById('cfgVisualRatingsBadges')?.checked);
-      preview.classList.toggle('genres-on', !!document.getElementById('cfgVisualGenreChips')?.checked);
-      preview.classList.toggle('info-on', infoMode !== 'on_tap');
-      preview.classList.toggle('backdrop-on', useBackdrops);
-      preview.classList.toggle('burn-in-on', burnIn);
+      // The preview orientation toggle (not the saved cfgLandscape field) drives
+      // how the iframe renders, so the frame shape and the render always agree.
+      const orientation = document.getElementById('setupVisualPreview')?.dataset.orientation || 'landscape';
 
-      // Reflect the settings the mock used to ignore, so the preview is faithful.
-      const framing = document.getElementById('cfgVisualPosterFraming')?.value || 'centred';
-      preview.dataset.posterFraming = POSTER_FRAMINGS.includes(framing) ? framing : 'centred';
-      preview.dataset.backdropStyle = BACKDROP_STYLES.includes(backdropStyle) ? backdropStyle : 'fullscreen';
-      preview.classList.toggle('poster-title-off', document.getElementById('cfgVisualShowPosterTitle')?.checked === false);
-      preview.classList.toggle('media-info-on', !!document.getElementById('cfgVisualShowMediaInfo')?.checked);
-      preview.classList.toggle('grain-on', !!document.getElementById('cfgVisualFilmGrain')?.checked);
-      preview.classList.toggle('kenburns-on', !!document.getElementById('cfgVisualKenBurns')?.checked);
-      for (const s of ['Title', 'Subtitle', 'Meta', 'Summary', 'Techbox', 'Player']) {
-        const hide = document.getElementById('cfgVisualInfoShow' + s)?.checked === false;
-        preview.classList.toggle('info-hide-' + s.toLowerCase(), hide);
+      if (frame && frame.contentWindow && previewFrameReady) {
+        try {
+          const payload = buildServerSetupPayload(accent, marqueeBg);
+          frame.contentWindow.postMessage({
+            type: 'nowshowing-preview-config',
+            config: { visual: payload.visual, landscape: orientation === 'landscape' },
+          }, '*');
+        } catch (_) { /* iframe not ready yet */ }
       }
-
-      const marquee = document.getElementById('setupPreviewMarquee');
-      if (marquee) marquee.textContent = displayMode === 'coming_soon' ? comingSoonTitle.toUpperCase() : 'NOW SHOWING';
 
       const caption = document.getElementById('setupPreviewCaption');
       if (caption) {
+        const themeLabel = document.querySelector(`#cfgVisualTheme option[value="${themeKey}"]`)?.textContent || themeKey;
+        const layoutLabel = document.querySelector(`#cfgVisualLayout option[value="${layout}"]`)?.textContent || layout;
         const bits = [
-          theme.label,
-          layout === 'cinematic' ? 'Cinematic layout' : 'Classic layout',
+          themeLabel,
+          layoutLabel,
           accent ? `Accent ${accent}` : 'Theme accent',
-          marqueeBg ? `Marquee bg ${marqueeBg}` : 'Theme marquee',
-          frameStyle,
-          frameStyle === 'bulbs' ? `${bulbSize}px bulbs` : '',
-          font.label,
-          `${radius}px radius`,
-          infoMode === 'on_tap' ? 'Info hidden until tap' : `Info ${infoMode.replace('_', ' ')}`,
-          useBackdrops ? `${backdropStyle} backdrop` : '',
-          burnIn ? `${nudgeAmplitude}px nudge + night dim sample` : '',
         ].filter(Boolean);
         caption.textContent = bits.join(' / ');
       }
@@ -5770,6 +5706,16 @@
         });
       }
       applySetupConfigMode(readConfig('setupConfigMode') === 'advanced' ? 'advanced' : 'basic');
+
+      // Preview iframe handshake: once the kiosk-in-preview reports ready, push
+      // the current settings so it renders them; re-push whenever it reloads.
+      window.addEventListener('message', (e) => {
+        if (e && e.data && e.data.type === 'nowshowing-preview-ready') {
+          previewFrameReady = true;
+          syncSetupVisualPreview();
+        }
+      });
+
       for (const id of ['cfgVisualUseBackdrops', 'cfgVisualBurnInMitigation']) {
         const input = document.getElementById(id);
         if (input) input.addEventListener('change', syncSetupVisualFields);
@@ -7265,6 +7211,74 @@
       }
     }
 
+    // ===== PREVIEW MODE (?preview=1) =====
+    // Renders the real kiosk against fixed demo media and applies settings the
+    // parent setup overlay posts in — so the overlay preview is the actual
+    // render, never a separate mock. No live HA fetch / SSE / polling.
+    const PREVIEW_MODE = new URLSearchParams(location.search).get('preview') === '1';
+
+    const DEMO_POSTER = 'data:image/svg+xml,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600">' +
+      '<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="#2a1c3a"/><stop offset="0.55" stop-color="#12233a"/><stop offset="1" stop-color="#05070c"/></linearGradient></defs>' +
+      '<rect width="400" height="600" fill="url(#s)"/>' +
+      '<circle cx="286" cy="150" r="96" fill="#f0a83c" opacity="0.9"/>' +
+      '<path d="M0 470 L70 400 L150 460 L230 380 L310 450 L400 390 L400 600 L0 600 Z" fill="#0a0d13"/>' +
+      '<rect y="470" width="400" height="130" fill="#000" opacity="0.35"/>' +
+      '<text x="30" y="520" font-family="Georgia,serif" font-size="46" fill="#fff">Blade</text>' +
+      '<text x="30" y="566" font-family="Georgia,serif" font-size="46" fill="#fff">Runner</text></svg>');
+
+    const DEMO_MEDIA = {
+      state: 'paused',
+      title: 'Blade Runner 2049',
+      seriesTitle: '',
+      contentType: 'movie',
+      contentRating: 'R',
+      duration: 8880,
+      position: 3600,
+      summary: 'A young blade runner discovers a long-buried secret that could plunge what is left of society into chaos, and sets out to find a former blade runner missing for thirty years.',
+      playerName: 'Living Room',
+      appName: '',
+      artwork: DEMO_POSTER,
+      ratingKey: 999999,
+    };
+    const DEMO_MEDIA_INFO = {
+      videoResolution: '4K', videoCodec: 'HEVC', videoProfile: 'main10', videoBitDepth: 10,
+      hdr: 'HDR10', audioCodec: 'TrueHD', audioChannels: 8, audioTitle: 'English (TrueHD 7.1)',
+      bitrate: 48000, container: 'MKV', width: 3840, height: 2160,
+      ratings: {
+        imdb: { value: 8.0, scale: 10, source: 'imdb' },
+        rottenTomatoes: { value: 88, scale: 100, source: 'rt' },
+        audience: { value: 8.3, scale: 10, source: 'tmdb' },
+      },
+      genres: ['Sci-Fi', 'Thriller', 'Drama'],
+      art: '',
+    };
+
+    function initPreviewMode() {
+      document.body.classList.add('preview-mode');
+      const gear = document.getElementById('setupGear');
+      if (gear) gear.style.display = 'none';
+      // Pre-seed the media-info cache so ratings/genres/tech render without a fetch.
+      try { cachedMediaInfo[DEMO_MEDIA.ratingKey] = DEMO_MEDIA_INFO; } catch (_) {}
+      showMedia(DEMO_MEDIA);
+      window.addEventListener('message', (e) => {
+        const d = e.data;
+        if (!d || d.type !== 'nowshowing-preview-config' || !d.config) return;
+        try {
+          applyServerRuntimeConfig(d.config);
+          // Landscape isn't part of applyServerRuntimeConfig (it's applied once
+          // at real init), so honour it here for the live orientation toggle.
+          const fw = document.getElementById('frameWrapper');
+          if (fw) fw.classList.toggle('landscape-mode', d.config.landscape === true);
+          applyVisualToggles();
+          showMedia(DEMO_MEDIA);
+        } catch (err) { /* ignore malformed config */ }
+      });
+      // Tell the parent overlay we're ready for the first config push.
+      try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'nowshowing-preview-ready' }, '*'); } catch (_) {}
+    }
+
     // ===== INIT =====
     async function init() {
       // Runtime visual config must resolve before the first render so we don't
@@ -7272,6 +7286,9 @@
       await loadVisualConfig();
       applyVisualToggles();
       syncDisplayModeText();
+      // Preview mode: render demo media and wait for the overlay's postMessage
+      // config pushes; no live data, SSE, or connection polling.
+      if (PREVIEW_MODE) { initPreviewMode(); return; }
       // Start SSE push connection — falls back to 30s poll automatically
       startSseConnection();
       // Do an immediate poll so the first render is instant (before SSE delivers)

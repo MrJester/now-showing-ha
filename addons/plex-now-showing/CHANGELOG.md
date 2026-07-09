@@ -3,6 +3,22 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.20 - 2026-07-09 (fork)
+
+### Changed
+
+- **Setup preview is now a live iframe of the real kiosk** instead of a
+  hand-built mock. The Display tab preview loads `now_showing.html?preview=1`,
+  which renders a fixed demo title (Blade Runner 2049, paused, with 4K/HDR/
+  TrueHD tech, IMDb/RT/audience ratings and genre chips) through the actual
+  render code — so every theme, layout, colour, poster-framing, info-panel,
+  and metadata toggle previews exactly as it will look on the wall device,
+  with no more drift between preview and live. The preview makes no live data
+  calls (no SSE/polling); it fetches config once, then the overlay pushes the
+  current form settings to it over `postMessage` on every change. The
+  Landscape/Portrait toggle drives the iframe's orientation so the frame shape
+  and the render always agree.
+
 ## 2.3.5-fix.19 - 2026-07-08 (fork)
 
 ### Changed
