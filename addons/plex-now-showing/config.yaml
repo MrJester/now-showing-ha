@@ -9,7 +9,7 @@
 # Docs on each field: https://developers.home-assistant.io/docs/add-ons/configuration
 
 name: Now Showing
-version: "2.3.5-fix.17"
+version: "2.3.5-fix.18"
 slug: plex_now_showing
 description: Cinema-style now-playing and coming-soon kiosk for Home Assistant.
 url: https://github.com/rusty4444/now-showing-ha
@@ -46,6 +46,7 @@ options:
   plex_url: ""
   plex_token: ""
   plex_username: ""
+  plex_insecure_tls: false
   plex_player: ""
   landscape: false
   theme: classic-gold
@@ -123,6 +124,7 @@ schema:
   plex_url: "str?"
   plex_token: "password?"
   plex_username: "str?"
+  plex_insecure_tls: "bool"
   plex_player: "str?"
   landscape: "bool"
   theme: "list(classic-gold|midnight|neon|minimal|custom)?"

@@ -160,6 +160,9 @@ if (isDirectRun) {
     for (const e of errors) console.error(`[config] ${e}`);
     process.exit(1);
   }
+  if (config.plexInsecureTls) {
+    console.warn('[config] plex_insecure_tls=true — Plex fetches skip TLS certificate verification (LAN only).');
+  }
   const haClient = createHaClient({ haUrl: config.haUrl, haToken: config.haToken });
   const app = createApp({ config, haClient, overlayStore, baseConfig });
   const stateCache = app.get('stateCache');

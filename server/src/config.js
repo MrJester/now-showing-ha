@@ -38,6 +38,11 @@ export function loadConfig(env = process.env) {
     plexToken: env.PLEX_TOKEN || '',
     plexUsername: env.PLEX_USERNAME || '',
     plexPlayer: env.PLEX_PLAYER || '',
+    // Skip TLS verification for Plex fetches. A Plex server reached by a custom
+    // hostname/IP presents a *.plex.direct cert that won't match, so HTTPS
+    // verification fails. Off by default; when on, the process relaxes TLS
+    // (also affects TMDB). Only sensible on a trusted LAN.
+    plexInsecureTls: parseBool(env.PLEX_INSECURE_TLS, false),
     landscape: parseBool(env.LANDSCAPE, false),
     theme: env.THEME || 'classic-gold',
     poll: parseInt(env.POLL || '5000', 10),

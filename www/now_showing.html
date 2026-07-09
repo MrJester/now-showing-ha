@@ -3014,6 +3014,13 @@
             <input id="cfgPlexToken" type="password" placeholder="xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
             <div class="hint">Required if Plex URL is set.</div>
           </div>
+
+          <div class="setup-field">
+            <label class="setup-check" for="cfgPlexInsecureTls">
+              <input id="cfgPlexInsecureTls" type="checkbox">
+              Ignore certificate errors
+            </label>
+          </div>
         </details>
 
         <div class="setup-field">
@@ -4154,6 +4161,7 @@
     ];
     const SETUP_CHECKBOX_FIELDS = [
       ['landscape', 'cfgLandscape', LANDSCAPE_MODE],
+      ['plexInsecureTls', 'cfgPlexInsecureTls', false],
       ['visualProgressBar', 'cfgVisualProgressBar', false],
       ['visualShowPosterTitle', 'cfgVisualShowPosterTitle', true],
       ['visualShowMediaInfo', 'cfgVisualShowMediaInfo', true],
@@ -4734,6 +4742,7 @@
       fillFromServer('cfgLandscape', body.landscape);
       fillFromServer('cfgPlexUrl', plex2.url);
       fillFromServer('cfgPlexUsername', plex2.username);
+      if (typeof plex2.insecureTls === 'boolean') fillFromServer('cfgPlexInsecureTls', plex2.insecureTls);
       fillFromServer('cfgComingSoonTitle', cs2.title);
       fillFromServer('cfgRadarrUrl', cs2.radarrUrl);
       fillFromServer('cfgSonarrUrl', cs2.sonarrUrl);
@@ -5485,6 +5494,7 @@
         player: val('cfgPlayer'),
         plexUrl: val('cfgPlexUrl'),
         plexUsername: val('cfgPlexUsername'),
+        plexInsecureTls: bool('cfgPlexInsecureTls'),
         landscape: bool('cfgLandscape'),
         switcherEnabled: bool('cfgSwitcherEnabled'),
         // Secrets \u2014 blank preserves existing on the server.
@@ -5607,6 +5617,7 @@
       cfgTmdbRegion: 'ISO 3166-1 country code (e.g. AU, US, GB) for which regional TMDB release dates to use.',
       cfgPlexUrl: "Plex server URL. Enables the info panel's media details (resolution, codec, HDR, audio).",
       cfgPlexToken: 'Plex X-Plex-Token. Required if a Plex URL is set. Never sent to the browser.',
+      cfgPlexInsecureTls: 'Skip TLS certificate verification for Plex only. Turn on if your Plex URL uses a hostname/IP whose certificate does not match (common on a LAN). Leave off unless metadata fails to load.',
       cfgLandscape: 'Force the landscape layout that fits the whole poster, regardless of screen orientation.',
       cfgVisualLayout: 'Screen arrangement, independent of the color theme. Classic keeps the marquee/poster layout; Cinematic fills the screen with fanart and a large corner title.',
       cfgVisualTheme: 'Overall look-and-feel preset for colors and ornamentation.',

@@ -372,6 +372,17 @@ test('showMediaInfo round-trips through the overlay and defaults on', () => {
   assert.equal(effectiveSetupView(merged).visual.showMediaInfo, false);
 });
 
+test('plexInsecureTls round-trips through the overlay and defaults off', () => {
+  assert.equal(effectiveSetupView(envBaseConfig()).plex.insecureTls, false);
+
+  const { overlay, errors } = sanitizeOverlayInput({ plexInsecureTls: true });
+  assert.equal(errors.length, 0);
+  assert.equal(overlay.plexInsecureTls, true);
+  const merged = applyOverlay(envBaseConfig(), overlay);
+  assert.equal(merged.plexInsecureTls, true);
+  assert.equal(effectiveSetupView(merged).plex.insecureTls, true);
+});
+
 test('visual layout round-trips through the overlay and defaults to classic', () => {
   assert.equal(effectiveSetupView(envBaseConfig()).visual.layout, 'classic');
 

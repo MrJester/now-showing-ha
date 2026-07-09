@@ -7,9 +7,13 @@
 // Anything else is rejected to prevent SSRF-style abuse of the proxy.
 
 import { Router } from 'express';
+import { makePlexFetch } from '../plexFetch.js';
 
-export function plexArtRoute({ config, fetchImpl = globalThis.fetch }) {
+export function plexArtRoute({ config, fetchImpl }) {
   const r = Router();
+  // Tests inject fetchImpl; production uses the Plex-scoped fetch that honors
+  // the plex_insecure_tls toggle (defaults to full verification).
+  const doFetch = fetchImpl || makePlexFetch({ insecure: !!config?.plexInsecureTls });
 
   r.get('/api/plex-art', async (req, res) => {
     if (!config.plexUrl || !config.plexToken) {
@@ -35,7 +39,7 @@ export function plexArtRoute({ config, fetchImpl = globalThis.fetch }) {
     try {
       const sep = path.includes('?') ? '&' : '?';
       const url = `${config.plexUrl}${path}${sep}X-Plex-Token=${encodeURIComponent(config.plexToken)}`;
-      const upstream = await fetchImpl(url);
+      const upstream = await doFetch(url);
       if (!upstream.ok) return res.status(upstream.status).end();
 
       const ct = upstream.headers.get('content-type') || 'image/jpeg';

@@ -33,6 +33,7 @@ export_opt PLAYER            player
 export_opt PLEX_URL          plex_url
 export_opt PLEX_TOKEN        plex_token
 export_opt PLEX_USERNAME     plex_username
+export_opt PLEX_INSECURE_TLS  plex_insecure_tls
 export_opt PLEX_PLAYER       plex_player
 export_opt LANDSCAPE         landscape
 export_opt THEME             theme

@@ -43,6 +43,7 @@ export function configRoute({ config }) {
         url: config.plexUrl || '',
         tokenSet: !!config.plexToken,
         username: config.plexUsername || '',
+        insecureTls: !!config.plexInsecureTls,
       },
       comingSoon: {
         title: config.comingSoon?.title || 'Coming Soon',

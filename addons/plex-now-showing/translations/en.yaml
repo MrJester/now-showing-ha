@@ -33,6 +33,13 @@ configuration:
     description: >-
       Filters which media_player.plex_* entities count as "yours" when no
       specific player is pinned.
+  plex_insecure_tls:
+    name: Ignore Plex certificate errors
+    description: >-
+      Skip TLS certificate verification for Plex requests only (HA/TMDB keep
+      full verification). Turn on if your Plex URL uses a hostname or IP whose
+      certificate does not match — common on a LAN, where Plex presents a
+      *.plex.direct cert. Off by default. Only enable on a trusted network.
   plex_player:
     name: Legacy pinned Plex player
     description: >-

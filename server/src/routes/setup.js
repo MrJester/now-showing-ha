@@ -110,6 +110,7 @@ export function sanitizeOverlayInput(body) {
         break;
       }
       case 'landscape':
+      case 'plexInsecureTls':
       case 'switcherEnabled': {
         const b = asBool(raw);
         if (b === null) { errors.push(`${k}_invalid`); break; }
@@ -438,6 +439,7 @@ export function effectiveSetupView(config) {
       url: config.plexUrl || '',
       tokenSet: !!config.plexToken,
       username: config.plexUsername || '',
+      insecureTls: !!config.plexInsecureTls,
     },
     comingSoon: {
       title: config.comingSoon?.title || 'Coming Soon',

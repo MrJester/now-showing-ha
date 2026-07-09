@@ -40,6 +40,7 @@ export const OVERLAY_TOP_KEYS = [
   'player',
   'plexUrl',
   'plexUsername',
+  'plexInsecureTls',
   'landscape',
   'switcherEnabled',
   'switcherIntervalMs',
@@ -177,7 +178,7 @@ export function applyOverlay(baseConfig, overlay) {
   };
 
   for (const k of OVERLAY_TOP_KEYS) {
-    if (k === 'landscape' || k === 'switcherEnabled') overrideBool(out, overlay, k);
+    if (k === 'landscape' || k === 'switcherEnabled' || k === 'plexInsecureTls') overrideBool(out, overlay, k);
     else if (k === 'switcherIntervalMs') overrideNumber(out, overlay, k);
     else overrideString(out, overlay, k);
   }

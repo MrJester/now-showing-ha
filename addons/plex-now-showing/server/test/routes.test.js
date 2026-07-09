@@ -136,6 +136,7 @@ test('GET /api/config defaults every visual toggle off', async () => {
         url: 'https://plex.example:32400',
         tokenSet: true,
         username: 'rusty',
+        insecureTls: false,
       },
       comingSoon: {
         title: 'Coming Soon',

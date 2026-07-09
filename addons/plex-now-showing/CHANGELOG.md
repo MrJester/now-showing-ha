@@ -3,6 +3,19 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.18 - 2026-07-08 (fork)
+
+### Added
+
+- **"Ignore certificate errors" toggle** for Plex (Connection tab → Plex
+  metadata API, and `plex_insecure_tls` add-on option). A Plex server reached
+  by a custom hostname/IP presents a `*.plex.direct` cert that won't match, so
+  the add-on's HTTPS metadata fetch failed (`plex_unreachable`) — which is why
+  backdrop art, ratings badges, genre chips, and the tech box weren't showing.
+  When enabled, Plex requests skip TLS verification; **HA, TMDB, and
+  Radarr/Sonarr keep full verification** (scoped via a node:https fetch, not a
+  global flag). Off by default; only enable on a trusted LAN.
+
 ## 2.3.5-fix.17 - 2026-07-06 (fork)
 
 ### Added

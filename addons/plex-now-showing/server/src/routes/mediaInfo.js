@@ -7,9 +7,11 @@
 
 import { Router } from 'express';
 import { parseRatingKey, fetchMediaInfo } from '../plex.js';
+import { makePlexFetch } from '../plexFetch.js';
 
 export function mediaInfoRoute({ cache, config }) {
   const r = Router();
+  const plexFetch = makePlexFetch({ insecure: !!config.plexInsecureTls });
 
   r.get('/api/media-info/:ratingKey', async (req, res) => {
     if (!config.plexUrl || !config.plexToken) {
@@ -27,6 +29,7 @@ export function mediaInfoRoute({ cache, config }) {
           plexUrl: config.plexUrl,
           plexToken: config.plexToken,
           ratingKey: id,
+          fetchImpl: plexFetch,
         });
         if (info) cache.set(id, info);
       }
