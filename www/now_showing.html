@@ -1686,10 +1686,38 @@
     body[data-layout="ambient"] .poster-title h2 { font-size: clamp(1.1rem, 3.2vw, 2.2rem); }
     body[data-layout="ambient"] .media-info { z-index: 5; }
 
-    /* Title is the hero in these layouts — always shown regardless of the toggle. */
+    /* Title is the hero in these layouts — shown when the info panel isn't
+       already displaying the title (see the :has() override below). */
     body[data-layout="spotlight"] .poster-title,
     body[data-layout="split"] .poster-title,
     body[data-layout="ambient"] .poster-title { display: block !important; }
+
+    /* The eyebrow-marquee layouts re-anchor .marquee to a small auto-sized box
+       at top-left. Its .marquee-text child is absolute (inset:0) in the base
+       styles, which collapses the auto-sized marquee to ~0 and makes the h1
+       overflow/wrap out of the corner. Let the text flow so it sizes the
+       marquee, and keep NOW SHOWING on one line. */
+    body[data-layout="cinematic"] .marquee-text,
+    body[data-layout="spotlight"] .marquee-text,
+    body[data-layout="split"] .marquee-text {
+      position: static;
+      display: block;
+    }
+    body[data-layout="cinematic"] .marquee-text h1,
+    body[data-layout="spotlight"] .marquee-text h1,
+    body[data-layout="split"] .marquee-text h1 {
+      white-space: nowrap;
+    }
+    /* The eyebrow is plain glowing text — drop the gold inner-trim box that the
+       full-width marquee draws (now visible once the marquee is text-sized). */
+    body[data-layout="cinematic"] .marquee::after,
+    body[data-layout="spotlight"] .marquee::after,
+    body[data-layout="split"] .marquee::after { display: none; }
+
+    /* Never show the title twice: whenever the info panel is visible (pinned
+       open or tapped) it renders the title itself, so drop the poster/hero
+       title in every layout. This overrides the hero force above. */
+    body:has(.info-overlay.visible) .poster-title { display: none !important; }
 
     /* ===== MEDIA INFO (bottom-right) ===== */
     .media-info {

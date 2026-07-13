@@ -3,6 +3,21 @@
 All notable changes to the Now Showing add-on will be documented here.
 The project follows [Semantic Versioning](https://semver.org/).
 
+## 2.3.5-fix.23 - 2026-07-11 (fork)
+
+### Fixed
+
+- **Marquee no longer clips in the eyebrow layouts.** In Cinematic / Poster
+  Spotlight / Split Editorial the marquee is re-anchored to a small auto-sized
+  box, but its text child was absolutely positioned, collapsing the box to ~0
+  so "NOW SHOWING" overflowed and wrapped out of the top-left corner. The
+  eyebrow text now flows (sizing the box) and stays on one line, and the stray
+  gold trim box around it is removed.
+- **No more duplicate title.** When the info panel is visible (pinned open or
+  tapped) it already renders the title, so the poster/hero title is now hidden
+  in every layout. You get the hero title when the panel is closed and the
+  info-panel title when it's open — never both stacked on top of each other.
+
 ## 2.3.5-fix.22 - 2026-07-09 (fork)
 
 ### Fixed
